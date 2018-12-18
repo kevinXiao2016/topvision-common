@@ -1,0 +1,889 @@
+NSCRTV-FTTX-EPONONU-WIFI-MIB DEFINITIONS ::= BEGIN
+IMPORTS
+    RowStatus
+      FROM SNMPv2-TC     
+    IpAddress, Unsigned32, Integer32, Counter32,OBJECT-TYPE, TimeTicks, Gauge32, Counter64,
+    MODULE-IDENTITY, OBJECT-IDENTITY, enterprises     
+      FROM SNMPv2-SMI     
+    DateAndTime, MacAddress, TimeStamp, RowStatus, TruthValue, DisplayString, TEXTUAL-CONVENTION
+      FROM SNMPv2-TC;
+   
+        
+nscrtvRoot  OBJECT IDENTIFIER ::= { enterprises 17409 }
+
+-- DESCRIPTION
+--     "nscrtvRoot定义全国广电设备管理MIB根节点。"
+nscrtvFTTxTree  OBJECT IDENTIFIER  ::= { nscrtvRoot 2}
+
+--     DESCRIPTION
+--     "OpticalReceiver MIB的分支节点标识。"
+
+eponOnuWifiObject    OBJECT IDENTIFIER ::= { nscrtvFTTxTree 9}
+
+EponDeviceIndex ::= TEXTUAL-CONVENTION
+      STATUS current
+      DESCRIPTION 
+        "
+        Epon olt/onu设备索引号。       
+        ONU ID的组成（4字节）（高--低）          
+        Olt device-8bit OLT Card-8bit Pon port-8bit OnuNUM-8bit        
+        Note: 
+        ----        
+        1. OLT device must not be 0.        
+        2. Card here shall confirm the last byte definition of EponCardIndex
+           to indicate the main-slot and sub-slot index.         
+        3. Pon port must not be 0.
+        4. The useful ONU logical ID MUST never be set to 0, where NUM of 0 has
+           another meaning, to indicate that the ONU logical ID is meaningless,
+           or said to not applied.
+                
+        Usage guide:
+        -----------        
+        This TC could be used for OLT SNI, OLT PON port, OLT ONU ID
+        ONU UNI, OLT device, trunk.         
+        If the refered MIB object does not have clear definition,
+        refer to the following:
+        Applied Obj  - Descriptions of Index
+        ------------------------------------------------------------------
+        OLT Pon Port - OnuNum shall be set to 0,
+        OLT SNI    - Same as OLT Pon Port         
+        OLT onu ID   - Set OnuNUM to corresponding ONU logical ID         
+        ONU UNI    - Same as OLT ONU ID
+        OLT device   - Set card, pon port and OnuNUM to 0
+        Trunk    - Card to 0x3F, pon port to trunk ID, OnuNUM to 0
+                 Olt device to corresponding ONU device       
+        "
+      SYNTAX Unsigned32
+
+
+eponWifiGroup    MODULE-IDENTITY
+    LAST-UPDATED    "201606011416Z"
+    ORGANIZATION    "Organization"
+    CONTACT-INFO    "Contact-info"
+    DESCRIPTION     "Description"
+    REVISION        "201606011416Z"
+    DESCRIPTION     "Revision description"
+    ::= { eponOnuWifiObject  1 }
+
+
+--
+-- eponOnuWifiGroup
+--
+eponOnuWifiGroup OBJECT IDENTIFIER ::= { eponWifiGroup 1 }
+
+--
+-- eponOnuWifiTable
+--
+eponOnuWifiTable OBJECT-TYPE
+    SYNTAX      SEQUENCE OF EponOnuWifiEntry
+    MAX-ACCESS  not-accessible
+    STATUS      current
+    DESCRIPTION
+        "家庭网关管理表"
+    ::= { eponOnuWifiGroup 1 }
+
+eponOnuWifiEntry OBJECT-TYPE
+    SYNTAX      EponOnuWifiEntry
+    MAX-ACCESS  not-accessible
+    STATUS      current
+    DESCRIPTION
+        "家庭网关管理表"
+        INDEX
+        {
+            eponOnuWifiIndex
+        }
+    ::= { eponOnuWifiTable 1 }
+
+EponOnuWifiEntry ::= SEQUENCE {
+        eponOnuWifiIndex                  EponDeviceIndex,
+        eponOnuWifiClearAllWan            INTEGER,
+        eponOnuWifiCfgRestore             INTEGER,
+        eponOnuWifiWlanEnable             INTEGER,
+        eponOnuWifiHardwareVersion        OCTET STRING,
+        eponOnuWifiSoftwareVersion        OCTET STRING,
+        eponOnuWifiChannelID              INTEGER,
+        eponOnuWifiWlanStandard           BITS,
+        eponOnuWifiChannelBandwidth       INTEGER,
+        eponOnuWifiTxPowerMode            INTEGER
+    }
+
+eponOnuWifiIndex OBJECT-TYPE
+    SYNTAX      EponDeviceIndex
+    MAX-ACCESS  not-accessible
+    STATUS      current
+    DESCRIPTION
+        "EponDeviceIndex"
+    ::= { eponOnuWifiEntry 1 }
+
+eponOnuWifiClearAllWan OBJECT-TYPE
+    SYNTAX      INTEGER{
+    clear(1)
+    }
+    MAX-ACCESS  read-write
+    STATUS      current
+    DESCRIPTION
+        "清除家庭网关所有WAN连接"
+    ::= { eponOnuWifiEntry 2 }
+
+eponOnuWifiCfgRestore OBJECT-TYPE
+    SYNTAX      INTEGER{
+    restore(1)
+    }
+    MAX-ACCESS  read-write
+    STATUS      current
+    DESCRIPTION
+        "终端恢复出厂配置"
+    ::= { eponOnuWifiEntry 3 }
+
+eponOnuWifiWlanEnable OBJECT-TYPE
+    SYNTAX      INTEGER{
+    enable(1),
+    disable(2)
+    }
+    MAX-ACCESS  read-write
+    STATUS      current
+    DESCRIPTION
+        "家庭网关WLAN使能"
+    ::= { eponOnuWifiEntry 4 }
+
+eponOnuWifiHardwareVersion OBJECT-TYPE
+    SYNTAX      OCTET STRING(SIZE(0..32))
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+        "硬件版本"
+    ::= { eponOnuWifiEntry 5 }
+
+eponOnuWifiSoftwareVersion OBJECT-TYPE
+    SYNTAX      OCTET STRING(SIZE(0..32))
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+        "软件版本"
+    ::= { eponOnuWifiEntry 6 }
+
+eponOnuWifiChannelID OBJECT-TYPE
+    SYNTAX      INTEGER(0..13)
+    MAX-ACCESS  read-write
+    STATUS      current
+    DESCRIPTION
+        "无线网络工作的信道ID,0为auto（默认）,其他1～13。"
+    ::= { eponOnuWifiEntry 7 }
+
+eponOnuWifiWlanStandard OBJECT-TYPE
+    SYNTAX      BITS
+    MAX-ACCESS  read-write
+    STATUS      current
+    DESCRIPTION
+        "无线网络的工作模式,使用bit位图描述，
+        从MSB开始
+        bit0-802.11b，
+        bit1-802.11g，
+        bit2-802.11n，
+        该bit=0则不支持该模式，1-支持该模式。默认为0x7"
+    ::= { eponOnuWifiEntry 8 }
+    
+eponOnuWifiChannelBandwidth OBJECT-TYPE
+    SYNTAX      INTEGER{
+    twenty(1),
+    fortyMinus(2),
+fortyPlus(3)
+    }
+    MAX-ACCESS  read-write
+    STATUS      current
+    DESCRIPTION
+        "无线数据传输时所占用的信道宽度,
+        1：20MHz（默认），此时信道可选择1～13；
+2：40MHz-，此时信道只能选择1～9；
+3：40MHz+，此时信道只能选择5～13。
+"
+    ::= { eponOnuWifiEntry 9 }
+ 
+eponOnuWifiTxPowerMode OBJECT-TYPE
+    SYNTAX      INTEGER{
+    energy(1),
+    standard(2),
+    noclip(3)
+    }
+    MAX-ACCESS  read-write
+    STATUS      current
+    DESCRIPTION
+        "发射功率模式功率大小：节能<标准<穿墙 
+        1：节能（低功耗）
+2：标准（默认）
+3：穿墙（最大功率）
+"
+    ::= { eponOnuWifiEntry 10 }
+
+
+
+--
+-- 2.	eponOnuWifiSsidTable 
+--
+	eponOnuWifiSsidTable OBJECT-TYPE
+    SYNTAX      SEQUENCE OF EponOnuWifiSsidEntry 
+    MAX-ACCESS  not-accessible
+    STATUS      current
+    DESCRIPTION
+        "Wifi ONU SSID management table。"
+    ::= { eponOnuWifiGroup 2 }
+
+eponOnuWifiSsidEntry  OBJECT-TYPE
+    SYNTAX      EponOnuWifiSsidEntry 
+    MAX-ACCESS  not-accessible
+    STATUS      current
+    DESCRIPTION
+        "The entry of eponOnuWifiSsidTable。"
+    INDEX
+        {
+            eponOnuWifiSsidOnuIndex,
+            eponOnuWifiSsidIndex
+        }
+    ::= { eponOnuWifiSsidTable 1 }
+
+EponOnuWifiSsidEntry ::= SEQUENCE
+    {
+        eponOnuWifiSsidOnuIndex              EponDeviceIndex,
+        eponOnuWifiSsidIndex                 INTEGER,
+        eponOnuWifiSsidName                  OCTET STRING,
+        eponOnuWifiSsidEncryptMode           INTEGER,
+        eponOnuWifiSsidEncryptKey            OCTET STRING,
+        eponOnuWifiSsidEnable                INTEGER,
+        eponOnuWifiSsidBroadcastEnable       INTEGER,
+        eponOnuWifiSsidMaxUser               INTEGER,
+        eponOnuWifiSsidRowStatus             RowStatus
+    }
+
+eponOnuWifiSsidOnuIndex OBJECT-TYPE
+    SYNTAX      EponDeviceIndex
+    MAX-ACCESS  not-accessible
+    STATUS      current
+    DESCRIPTION
+        "家庭网关ONU索引，该索引值应与设备表中已登记终端保持一致。"
+    ::= { eponOnuWifiSsidEntry 1 }
+
+eponOnuWifiSsidIndex  OBJECT-TYPE
+    SYNTAX      INTEGER
+    MAX-ACCESS  not-accessible
+    STATUS      current
+    DESCRIPTION
+        "家庭网关SSID索引，从1开始（1-4）。"
+    ::= { eponOnuWifiSsidEntry 2 }
+
+eponOnuWifiSsidName OBJECT-TYPE
+    SYNTAX      OCTET STRING(SIZE(0..32))
+    MAX-ACCESS  read-write
+    STATUS      current
+    DESCRIPTION
+        "家庭网关SSID名称。"
+    ::= { eponOnuWifiSsidEntry 3 }
+ 
+ eponOnuWifiSsidEncryptMode OBJECT-TYPE
+    SYNTAX      INTEGER{
+none(0),
+wep(1),
+wpa(2),
+wpa2(3),
+wpa_wap2(4)
+                }
+    MAX-ACCESS  read-write
+    STATUS      current
+    DESCRIPTION
+        "无线加密模式
+        0：NONE
+1：WEP
+2：WPA
+3：WPA2
+4：WPA_WPA2（默认）
+"
+    ::= { eponOnuWifiSsidEntry 4 }
+
+ eponOnuWifiSsidEncryptKey OBJECT-TYPE
+    SYNTAX      OCTET STRING(SIZE(0..64))
+    MAX-ACCESS  read-write
+    STATUS      current
+    DESCRIPTION
+        "无线密码。"
+    ::= { eponOnuWifiSsidEntry 5 }
+
+eponOnuWifiSsidEnable OBJECT-TYPE
+    SYNTAX      INTEGER{
+    enable(1),
+    disable(2)
+    }
+    MAX-ACCESS  read-write
+    STATUS      current
+    DESCRIPTION
+        "家庭网关SSID使能。"
+    ::= { eponOnuWifiSsidEntry 6 }
+ 
+ eponOnuWifiSsidBroadcastEnable OBJECT-TYPE
+    SYNTAX      INTEGER{
+    enable(1),
+    disable(2)
+    }
+    MAX-ACCESS  read-write
+    STATUS      current
+    DESCRIPTION
+        "家庭SSID广播使能。"
+    ::= { eponOnuWifiSsidEntry 7 }
+ 
+  eponOnuWifiSsidMaxUser OBJECT-TYPE
+    SYNTAX      INTEGER(0..128)
+    MAX-ACCESS  read-write
+    STATUS      current
+    DESCRIPTION
+        "家庭网关SSID最大用户接入,0-128，0表示不限。"
+    ::= { eponOnuWifiSsidEntry 8 }
+
+eponOnuWifiSsidRowStatus OBJECT-TYPE
+    SYNTAX      RowStatus
+    MAX-ACCESS  read-create
+    STATUS      current
+    DESCRIPTION
+        "家庭网关SSID行状态。
+做扩展用，不作强制要求"
+    ::= { eponOnuWifiSsidEntry 9 }
+
+--
+-- 3.	eponOnuWifiWanTable 
+--
+eponOnuWifiWanTable  OBJECT-TYPE
+    SYNTAX      SEQUENCE OF EponOnuWifiWanEntry 
+    MAX-ACCESS  not-accessible
+    STATUS      current
+    DESCRIPTION
+        "Wifi ONU WAN conection management table。"
+    ::= { eponOnuWifiGroup 3 }
+
+eponOnuWifiWanEntry OBJECT-TYPE
+    SYNTAX      EponOnuWifiWanEntry
+    MAX-ACCESS  not-accessible
+    STATUS      current
+    DESCRIPTION
+        "The entry of eponOnuWifiWanTable。"
+    INDEX
+        {
+            eponOnuWifiWanOnuIndex,
+            eponOnuWifiWanIndex
+        }
+    ::= { eponOnuWifiWanTable 1 }
+
+EponOnuWifiWanEntry ::= SEQUENCE
+    {
+        eponOnuWifiWanOnuIndex           EponDeviceIndex,
+        eponOnuWifiWanIndex              INTEGER,
+        eponOnuWifiWanName               OCTET STRING,
+        eponOnuWifiWanMtu                INTEGER,
+        eponOnuWifiWanVid                INTEGER,
+        eponOnuWifiWanPrio               INTEGER,  
+        eponOnuWifiWanConnectMode        INTEGER,
+        eponOnuWifiWanIpMode             INTEGER,
+        eponOnuWifiWanPppoeUser          OCTET STRING,
+        eponOnuWifiWanPppoePassword      OCTET STRING,
+        eponOnuWifiWanIpv4Addr           IpAddress,
+        eponOnuWifiWanIpv4Mask           IpAddress,
+        eponOnuWifiWanIpv4Gw             IpAddress,
+        eponOnuWifiWanIpv4DnsPrimary     IpAddress,
+        eponOnuWifiWanIpv4DnsSecondary   IpAddress,
+        eponOnuWifiWanRowStatus          RowStatus
+    }
+
+eponOnuWifiWanOnuIndex OBJECT-TYPE
+    SYNTAX      EponDeviceIndex
+    MAX-ACCESS  not-accessible
+    STATUS      current
+    DESCRIPTION
+        "家庭网关ONU索引，该索引值应与设备表中已登记终端保持一致。"
+    ::= { eponOnuWifiWanEntry 1 }
+
+eponOnuWifiWanIndex OBJECT-TYPE
+    SYNTAX      INTEGER(1..8)
+    MAX-ACCESS  not-accessible
+    STATUS      current
+    DESCRIPTION
+        "家庭网关WAN连接索引（1-8）。"
+    ::= { eponOnuWifiWanEntry 2 }
+
+eponOnuWifiWanName OBJECT-TYPE
+    SYNTAX      OCTET STRING(SIZE(1..32))
+    MAX-ACCESS  read-create
+    STATUS      current
+    DESCRIPTION
+        "Wan连接名称索引。"
+    ::= { eponOnuWifiWanEntry 3 }
+
+eponOnuWifiWanMtu OBJECT-TYPE
+    SYNTAX      INTEGER(64..1500)
+    MAX-ACCESS  read-create
+    STATUS      current
+    DESCRIPTION
+        "WAN连接MTU范围（64-1500）,默认值建议为1466。"
+    ::= { eponOnuWifiWanEntry 4 }
+
+eponOnuWifiWanVid OBJECT-TYPE
+    SYNTAX      INTEGER(0..4094)
+    MAX-ACCESS  read-create
+    STATUS      current
+    DESCRIPTION
+        "WAN连接VLAN ID, (0～4094) 0表示没有VLAN。"
+    ::= { eponOnuWifiWanEntry 5 }
+
+eponOnuWifiWanPrio OBJECT-TYPE
+    SYNTAX      INTEGER(0..7)
+    MAX-ACCESS  read-create
+    STATUS      current
+    DESCRIPTION
+        "WAN连接VLAN优先级。"
+    ::= { eponOnuWifiWanEntry 6 }       
+
+eponOnuWifiWanConnectMode OBJECT-TYPE
+    SYNTAX    INTEGER{
+    route(1),
+    bridge(2)
+  }
+    MAX-ACCESS  read-write
+    STATUS      current
+    DESCRIPTION
+        "WAN连接模式。"
+    ::= { eponOnuWifiWanEntry 7 }
+
+eponOnuWifiWanIpMode OBJECT-TYPE
+    SYNTAX      INTEGER{
+    dhcp(1),
+    static(2),
+    pppoe(3),
+    other(4)
+    }
+    MAX-ACCESS  read-create
+    STATUS      current
+    DESCRIPTION
+        "WAN连接IP分配模式。"
+    ::= { eponOnuWifiWanEntry 8 }
+    
+eponOnuWifiWanPppoeUser OBJECT-TYPE
+    SYNTAX       OCTET STRING(SIZE(0..32))
+    MAX-ACCESS  read-create
+    STATUS      current
+    DESCRIPTION
+        "WAN连接PPPoE user。"
+    ::= { eponOnuWifiWanEntry 9 }
+    
+eponOnuWifiWanPppoePassword OBJECT-TYPE
+    SYNTAX      OCTET STRING(SIZE(0..16))
+    MAX-ACCESS  read-create
+    STATUS      current
+    DESCRIPTION
+        "WAN连接PPPoE password。"
+    ::= { eponOnuWifiWanEntry 10 }
+
+eponOnuWifiWanIpv4Addr OBJECT-TYPE
+    SYNTAX      IpAddress
+    MAX-ACCESS  read-create
+    STATUS      current
+    DESCRIPTION
+        "WAN连接IPv4地址。"
+    ::= { eponOnuWifiWanEntry 11 }
+
+eponOnuWifiWanIpv4Mask OBJECT-TYPE
+    SYNTAX      IpAddress
+    MAX-ACCESS  read-create
+    STATUS      current
+    DESCRIPTION
+         "WAN连接IPv4掩码。"
+    ::= { eponOnuWifiWanEntry 12 }
+
+eponOnuWifiWanIpv4Gw OBJECT-TYPE
+    SYNTAX      IpAddress
+    MAX-ACCESS  read-create
+    STATUS      current
+    DESCRIPTION
+        "WAN连接IPv4网关。"
+    ::= { eponOnuWifiWanEntry 13 }
+
+eponOnuWifiWanIpv4DnsPrimary OBJECT-TYPE
+    SYNTAX      IpAddress
+    MAX-ACCESS  read-create
+    STATUS      current
+    DESCRIPTION
+        "WAN连接IPv4首选DNS,在static模式下使用有效。一共可支持8个备选DNS，长度为32，每四个字节代表一个DNS地址"
+    ::= { eponOnuWifiWanEntry 14 }
+
+eponOnuWifiWanIpv4DnsSecondary OBJECT-TYPE
+    SYNTAX      IpAddress
+    MAX-ACCESS  read-create
+    STATUS      current
+    DESCRIPTION
+        "WAN连接IPv4备选DNS列表，在static模式下使用有效。一共可支持8个备选DNS，长度为32，每四个字节代表一个DNS地址"
+    ::= { eponOnuWifiWanEntry 15 }
+
+eponOnuWifiWanRowStatus OBJECT-TYPE
+    SYNTAX      RowStatus
+    MAX-ACCESS  read-create
+    STATUS      current
+    DESCRIPTION
+        "WAN连接行状态。"
+    ::= { eponOnuWifiWanEntry 16 }
+
+--
+-- eponOnuWifiDataWanTable
+--
+eponOnuWifiDataWanTable OBJECT-TYPE
+    SYNTAX      SEQUENCE OF EponOnuWifiDataWanEntry
+    MAX-ACCESS  not-accessible
+    STATUS      current
+    DESCRIPTION
+        "Wifi ONU management WAN conection management table"
+    ::= { eponOnuWifiGroup 4 }
+
+eponOnuWifiDataWanEntry OBJECT-TYPE
+    SYNTAX      EponOnuWifiDataWanEntry
+    MAX-ACCESS  not-accessible
+    STATUS      current
+    DESCRIPTION
+        "
+        The entry of eponOnuWifiDataWanTable.
+        "
+    INDEX
+        {
+            eponOnuWifiDataWanOnuIndex,
+            eponOnuWifiDataWanIndex 
+        }
+    ::= { eponOnuWifiDataWanTable 1 }
+
+EponOnuWifiDataWanEntry ::= SEQUENCE
+    {
+        eponOnuWifiDataWanOnuIndex               EponDeviceIndex,
+        eponOnuWifiDataWanIndex                  INTEGER,
+    --    eponOnuWifiDataWanConnectMode            INTEGER,
+        eponOnuWifiDataWanServiceType            INTEGER,
+        eponOnuWifiDataWanBindIf                 BITS
+    }
+
+eponOnuWifiDataWanOnuIndex OBJECT-TYPE
+    SYNTAX      EponDeviceIndex
+    MAX-ACCESS  not-accessible
+    STATUS      current
+    DESCRIPTION
+        "家庭网关ONU索引，该索引值应与设备表中已登记终端保持一致"
+    ::= { eponOnuWifiDataWanEntry 1 }
+
+eponOnuWifiDataWanIndex OBJECT-TYPE
+    SYNTAX      INTEGER
+    MAX-ACCESS  not-accessible
+    STATUS      current
+    DESCRIPTION
+        "家庭网关WAN连接索引(1-8)"
+    ::= { eponOnuWifiDataWanEntry 2 }
+	
+-- eponOnuWifiDataWanConnectMode OBJECT-TYPE
+--    SYNTAX    INTEGER{
+--    route(1),
+--    bridge(2)
+--  }
+--    MAX-ACCESS  read-write
+--    STATUS      current
+--    DESCRIPTION
+--        "WAN连接模式。"
+--    ::= { eponOnuWifiDataWanEntry 3 }
+	
+eponOnuWifiDataWanServiceType OBJECT-TYPE
+    SYNTAX     INTEGER{
+    internet(1),
+    vod(2),
+    voip(3),
+    mgmt(4),
+    tr069(5)
+    }
+    MAX-ACCESS  read-write
+    STATUS      current
+    DESCRIPTION
+        "WAN连接业务类型"
+    ::= { eponOnuWifiDataWanEntry 3 }
+
+eponOnuWifiDataWanBindIf OBJECT-TYPE
+    SYNTAX      BITS{
+ssid1(0),
+ssid2(1),
+ssid3(2),
+ssid4(3),
+lan1(4),
+lan2(5),
+lan3(6),
+lan4(7)
+}
+
+    MAX-ACCESS  read-write
+    STATUS      current
+    DESCRIPTION
+        "WAN连接绑定接口
+         默认为0:，SSID只支持1-4
+        "
+    ::= { eponOnuWifiDataWanEntry 4 }
+
+--
+-- eponOnuWifiUpgradeTable
+--
+eponOnuWifiUpgradeTable OBJECT-TYPE
+    SYNTAX      SEQUENCE OF EponOnuWifiUpgradeEntry
+    MAX-ACCESS  not-accessible
+    STATUS      current
+    DESCRIPTION
+        "Wifi ONU upgrade management table"
+    ::= { eponOnuWifiGroup 5 }
+
+eponOnuWifiUpgradeEntry OBJECT-TYPE
+    SYNTAX      EponOnuWifiUpgradeEntry
+    MAX-ACCESS  not-accessible
+    STATUS      current
+    DESCRIPTION
+        "
+        The entry of eponOnuWifiUpgradeTable.
+        "
+    INDEX
+        {
+            eponOnuWifiUpgradeOnuIndex
+         }
+    ::= { eponOnuWifiUpgradeTable 1 }
+
+EponOnuWifiUpgradeEntry ::= SEQUENCE
+    {
+        eponOnuWifiUpgradeOnuIndex          EponDeviceIndex,
+        eponOnuWifiUpgradeFileType          INTEGER,
+        eponOnuWifiUpgradeFileName          OCTET STRING,
+        eponOnuWifiUpgradeTransportType     INTEGER,
+        eponOnuWifiUpgradeServerIpv4Addr    IpAddress,
+        eponOnuWifiUpgradeServerPort        INTEGER,
+        eponOnuWifiUpgradeUser              OCTET STRING,
+        eponOnuWifiUpgradePassword          OCTET STRING,
+        eponOnuWifiUpgradeClearFlag         INTEGER,
+        eponOnuWifiUpgradeProceed           INTEGER
+    }
+
+eponOnuWifiUpgradeOnuIndex OBJECT-TYPE
+    SYNTAX      EponDeviceIndex
+    MAX-ACCESS  not-accessible
+    STATUS      current
+    DESCRIPTION
+        "家庭网关ONU索引，该索引值应与设备表中已登记终端保持一致"
+    ::= { eponOnuWifiUpgradeEntry 1 }
+
+eponOnuWifiUpgradeFileType OBJECT-TYPE
+    SYNTAX      INTEGER{
+    image(1),
+    config(2)
+    }
+    MAX-ACCESS  read-write
+    STATUS      current
+    DESCRIPTION
+        "升级文件类型"
+    ::= { eponOnuWifiUpgradeEntry 2 }
+
+eponOnuWifiUpgradeFileName OBJECT-TYPE
+    SYNTAX      OCTET STRING(SIZE(1..32))
+    MAX-ACCESS  read-write
+    STATUS      current
+    DESCRIPTION
+        "升级文件名。"
+    ::= { eponOnuWifiUpgradeEntry 3 }
+
+eponOnuWifiUpgradeTransportType OBJECT-TYPE
+    SYNTAX      INTEGER{
+    ftp(0)    }
+    MAX-ACCESS  read-write
+    STATUS      current
+    DESCRIPTION
+        "协议类型"
+    ::= { eponOnuWifiUpgradeEntry 4 }
+
+eponOnuWifiUpgradeServerIpv4Addr OBJECT-TYPE
+    SYNTAX      IpAddress
+    MAX-ACCESS  read-write
+    STATUS      current
+    DESCRIPTION
+        "升级服务器IPv4地址。"
+    ::= { eponOnuWifiUpgradeEntry 5 }
+
+eponOnuWifiUpgradeServerPort OBJECT-TYPE
+    SYNTAX      INTEGER
+    MAX-ACCESS  read-write
+    STATUS      current
+    DESCRIPTION
+        "升级服务器端口号。"
+    ::= { eponOnuWifiUpgradeEntry 6 }
+    
+eponOnuWifiUpgradeUser OBJECT-TYPE
+    SYNTAX      OCTET STRING(SIZE(0..32))
+    MAX-ACCESS  read-write
+    STATUS      current
+    DESCRIPTION
+        "升级用户名。"
+    ::= { eponOnuWifiUpgradeEntry 7 }
+    
+eponOnuWifiUpgradePassword OBJECT-TYPE
+    SYNTAX      OCTET STRING(SIZE(0..16))
+    MAX-ACCESS  read-write
+    STATUS      current
+    DESCRIPTION
+        "升级密码。"
+    ::= { eponOnuWifiUpgradeEntry 8 }
+
+eponOnuWifiUpgradeClearFlag OBJECT-TYPE
+    SYNTAX      INTEGER{
+    notclear(1),
+    clear(2)
+    }
+    MAX-ACCESS  read-write
+    STATUS      current
+    DESCRIPTION
+        "升级清除标志。
+        1：不清除（默认） 2：清除	"
+    ::= { eponOnuWifiUpgradeEntry 9 }
+
+eponOnuWifiUpgradeProceed OBJECT-TYPE
+    SYNTAX      INTEGER{
+    downloadandupgrade(1)
+    }
+    MAX-ACCESS  read-write
+    STATUS      current
+    DESCRIPTION
+        "升级指令。"
+    ::= { eponOnuWifiUpgradeEntry 10 }
+
+
+--
+-- 6.	eponOnuWifiWanStatusTable 
+--
+eponOnuWifiWanStatusTable OBJECT-TYPE
+    SYNTAX      SEQUENCE OF EponOnuWifiWanStatusEntry 
+    MAX-ACCESS  not-accessible
+    STATUS      current
+    DESCRIPTION
+        "Wifi ONU Wan Status management table"
+    ::= { eponOnuWifiGroup 6 }
+
+eponOnuWifiWanStatusEntry OBJECT-TYPE
+    SYNTAX      EponOnuWifiWanStatusEntry
+    MAX-ACCESS  not-accessible
+    STATUS      current
+    DESCRIPTION
+        "家庭网关WAN状态回调表。"
+    INDEX
+        {
+            eponOnuWifiWanStatusOnuIndex,
+            eponOnuWifiWanStatusWanIndex  
+         }
+    ::= { eponOnuWifiWanStatusTable 1 }
+
+EponOnuWifiWanStatusEntry ::= SEQUENCE
+    {
+        eponOnuWifiWanStatusOnuIndex                EponDeviceIndex,
+        eponOnuWifiWanStatusWanIndex                INTEGER,
+        eponOnuWifiWanStatusWanName                 OCTET STRING,
+        eponOnuWifiWanStatusWanIpMode               INTEGER,
+        eponOnuWifiWanStatusConnState               INTEGER,
+        eponOnuWifiWanStatusErrCode                 INTEGER,
+        eponOnuWifiWanStatusIpv4Addr                IpAddress,
+        eponOnuWifiWanStatusIpv4Mask                IpAddress,
+        eponOnuWifiWanStatusIpv4Gw                  IpAddress,
+        eponOnuWifiWanStatusIpv4DnsPrimary          IpAddress,    
+        eponOnuWifiWanStatusIpv4DnsSecondary        IpAddress
+    }
+
+eponOnuWifiWanStatusOnuIndex OBJECT-TYPE
+    SYNTAX      EponDeviceIndex
+    MAX-ACCESS  not-accessible
+    STATUS      current
+    DESCRIPTION
+        "家庭网关ONU索引,该索引值应与设备表中已登记终端保持一致"
+    ::= { eponOnuWifiWanStatusEntry 1 }
+
+eponOnuWifiWanStatusWanIndex OBJECT-TYPE
+    SYNTAX      INTEGER
+    MAX-ACCESS  not-accessible
+    STATUS      current
+    DESCRIPTION
+        "家庭网关WAN连接索引"
+    ::= { eponOnuWifiWanStatusEntry 2 }
+
+eponOnuWifiWanStatusWanName OBJECT-TYPE
+    SYNTAX      OCTET STRING(SIZE(1..32))
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+        "家庭网关WAN连接名称"
+    ::= { eponOnuWifiWanStatusEntry 3 }
+
+eponOnuWifiWanStatusWanIpMode OBJECT-TYPE
+    SYNTAX  INTEGER{
+    bridge(1),
+    dhcp(2),  
+    pppoe(3),
+    static(4)  
+    }
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+        "WAN连接模式"
+    ::= { eponOnuWifiWanStatusEntry 4 }
+
+eponOnuWifiWanStatusConnState OBJECT-TYPE
+    SYNTAX      INTEGER{  
+    disconnect(0),
+connect(1)
+                }
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+        "家庭网关WAN连接状态"
+    ::= { eponOnuWifiWanStatusEntry 5 }
+
+eponOnuWifiWanStatusErrCode OBJECT-TYPE
+    SYNTAX      INTEGER
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+        "家庭网关WAN连接错误码"
+    ::= { eponOnuWifiWanStatusEntry 6 }
+    
+eponOnuWifiWanStatusIpv4Addr OBJECT-TYPE
+    SYNTAX      IpAddress
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+        "WAN连接IPv4地址"
+    ::= { eponOnuWifiWanStatusEntry 7 }
+    
+eponOnuWifiWanStatusIpv4Mask OBJECT-TYPE
+    SYNTAX      IpAddress
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+        "WAN连接IPv4掩码"
+    ::= { eponOnuWifiWanStatusEntry 8 }
+
+eponOnuWifiWanStatusIpv4Gw OBJECT-TYPE
+    SYNTAX      IpAddress
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+        "WAN连接IPv4网关"
+    ::= { eponOnuWifiWanStatusEntry 9 }
+
+eponOnuWifiWanStatusIpv4DnsPrimary OBJECT-TYPE
+    SYNTAX      IpAddress
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+        "WAN连接IPv4首选DNS,一共可支持8个备选DNS，长度为32，每四个字节代表一个DNS地址"
+    ::= { eponOnuWifiWanStatusEntry 10 }
+ 
+eponOnuWifiWanStatusIpv4DnsSecondary OBJECT-TYPE
+    SYNTAX      IpAddress
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+        "WAN连接IPv4备选DNS列表，一共可支持8个备选DNS，长度为32，每四个字节代表一个DNS地址"
+    ::= { eponOnuWifiWanStatusEntry 11 }
+ 
+END

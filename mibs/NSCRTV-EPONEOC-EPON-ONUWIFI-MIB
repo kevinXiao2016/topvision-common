@@ -1,0 +1,849 @@
+	NSCRTV-EPONEOC-EPON-ONUWIFI-MIB DEFINITIONS ::= BEGIN
+ 
+		IMPORTS
+			IpAddress, OBJECT-TYPE, OBJECT-IDENTITY
+				FROM SNMPv2-SMI		
+			RowStatus, TEXTUAL-CONVENTION			
+				FROM SNMPv2-TC
+			nscrtvEponEocTree, onuObjects, EponDeviceIndex
+				FROM NSCRTV-EPONEOC-EPON-MIB;
+
+--
+-- Textual conventions
+--
+
+--
+-- Node definitions
+--
+
+		-- 1.3.6.1.4.1.17409.2.3.4.6
+		eponOnuGroupTree OBJECT IDENTIFIER ::= { onuObjects 6 }
+		-- 1.3.6.1.4.1.17409.2.3.4.6.111
+		eponOnuWifiObject OBJECT IDENTIFIER ::= { eponOnuGroupTree 111 }
+		-- 1.3.6.1.4.1.17409.2.3.4.6.111.10
+		eponOnuWifiTree OBJECT IDENTIFIER ::= { eponOnuWifiObject 10 }
+		--------------------------------------------------------------------------------
+		-- eponOnuWifiGroup(1.3.6.1.4.1.17409.2.3.4.6.111.10.1)
+		--------------------------------------------------------------------------------
+		eponOnuWifiGroup OBJECT IDENTIFIER ::= { eponOnuWifiTree 1 }
+
+		    eponOnuWifiTable  OBJECT-TYPE
+		        SYNTAX      SEQUENCE OF EponOnuWifiEntry
+		        MAX-ACCESS  not-accessible
+		        STATUS      current
+		        DESCRIPTION
+		        "A list of eponOnuWifiTable entries. "
+		        ::= {eponOnuWifiGroup 1 }
+
+		    eponOnuWifiEntry  OBJECT-TYPE
+		        SYNTAX      EponOnuWifiEntry
+		        MAX-ACCESS  not-accessible
+		        STATUS      current
+		        DESCRIPTION  
+		        "The eponOnuWifiEntry Information"
+		        INDEX       { eponOnuWifiOnuIndex  }   
+		        ::={eponOnuWifiTable 1 }   
+
+		    EponOnuWifiEntry ::= SEQUENCE {
+		        eponOnuWifiOnuIndex             EponDeviceIndex,
+		        eponOnuWifiClearAllWan          INTEGER,
+		        eponOnuWifiCfgRestore           INTEGER,
+		        eponOnuWifiWlanEnable           INTEGER, 
+		        eponOnuWifiHardwareVersion      OCTET STRING, 
+		        eponOnuWifiSoftwareVersion      OCTET STRING, 
+		        eponOnuWifiChannelID            INTEGER, 
+		        eponOnuWifiWlanStandard         BITS, 
+		        eponOnuWifiChannelBandwidth     INTEGER, 
+		        eponOnuWifiTxPowerMode          INTEGER
+		      } 
+
+		    eponOnuWifiOnuIndex   OBJECT-TYPE
+		        SYNTAX      EponDeviceIndex
+		        MAX-ACCESS  not-accessible
+		        STATUS      current
+		        DESCRIPTION
+		        ""
+		        ::= {eponOnuWifiEntry 1 }  
+
+		    eponOnuWifiClearAllWan  OBJECT-TYPE
+		        SYNTAX      INTEGER
+		        {
+		        			idle(0),
+		        			clear(1)
+		        }
+		        MAX-ACCESS  read-write
+		        STATUS      current
+		        DESCRIPTION
+		        "clear all connections in the HGW.
+		        read value is idle always"
+		        ::= {eponOnuWifiEntry 2 }  
+
+		    eponOnuWifiCfgRestore  OBJECT-TYPE
+		        SYNTAX      INTEGER
+		        {
+		        			idle(0),
+		        			restoreFactoryConfig(1)
+		        }
+		        MAX-ACCESS  read-write
+		        STATUS      current
+		        DESCRIPTION
+		        "restore factory configuration.
+		        read value is idle always"
+		        ::= {eponOnuWifiEntry 3 }  
+
+		    eponOnuWifiWlanEnable   OBJECT-TYPE
+		        SYNTAX      INTEGER
+		        {
+		        			enable(1),
+		        			disable(2)
+		        }
+		        MAX-ACCESS  read-write
+		        STATUS      current
+		        DESCRIPTION
+		        "HGW WLAN enable/disable"
+			      DEFVAL { enable }
+		        ::= {eponOnuWifiEntry 4 }  
+
+		    eponOnuWifiHardwareVersion  OBJECT-TYPE
+		        SYNTAX      OCTET STRING (SIZE (0..32))
+		        MAX-ACCESS  read-only
+		        STATUS      current
+		        DESCRIPTION
+			      "HGW hardware version, end with NULL"
+		        ::= {eponOnuWifiEntry 5 }  
+
+		    eponOnuWifiSoftwareVersion   OBJECT-TYPE
+		        SYNTAX      OCTET STRING (SIZE (0..32))
+		        MAX-ACCESS  read-only
+		        STATUS      current
+		        DESCRIPTION
+			      "HGW software version, end with NULL"
+		        ::= {eponOnuWifiEntry 6 }
+
+		    eponOnuWifiChannelID   OBJECT-TYPE
+		        SYNTAX      INTEGER
+		        {
+		        			auto(0),
+		        			channel1(1),
+		        			channel2(2),
+		        			channel3(3),
+		        			channel4(4),
+		        			channel5(5),
+		        			channel6(6),
+		        			channel7(7),
+		        			channel8(8),
+		        			channel9(9),
+		        			channel10(10),
+		        			channel11(11),
+		        			channel12(12),
+		        			channel13(13)
+		        }
+		        MAX-ACCESS  read-write
+		        STATUS      current
+		        DESCRIPTION
+			      "HGW wireless channel id"
+			      DEFVAL { auto }
+		        ::= {eponOnuWifiEntry 7 }  
+
+		    eponOnuWifiWlanStandard   OBJECT-TYPE
+			      SYNTAX BITS
+				    {
+  			        ieee802dot11b(0),
+  			        ieee802dot11g(1),
+				        ieee802dot11n(2)
+				    }
+		        MAX-ACCESS  read-write
+		        STATUS      current
+		        DESCRIPTION
+			      "HGW WIFI work mode: bit0-802.11b, bit1-802.11g, bit2-802.11n"
+			      DEFVAL { 7 }
+		        ::= {eponOnuWifiEntry 8 }  
+
+		    eponOnuWifiChannelBandwidth   OBJECT-TYPE
+		        SYNTAX      INTEGER
+		        {
+		        			bw20MHz(1),
+		        			bw40MHzsubtract(2),
+		        			bw40MHzplus(3)
+		        }
+		        MAX-ACCESS  read-write
+		        STATUS      current
+		        DESCRIPTION
+			      "channel bandwidth mode:
+             1:20MHz(default), channel id(1~13);
+             2:40MHz-, channel id(1~9) only;
+             3:40MHz+, channel id(5~13) only;
+            "
+			      DEFVAL { bw20MHz }
+		        ::= {eponOnuWifiEntry 9 }  
+
+		    eponOnuWifiTxPowerMode   OBJECT-TYPE
+		        SYNTAX      INTEGER
+		        {
+		        			energySaving(1),
+		        			standard(2),
+		        			maxPower(3)
+		        }
+		        MAX-ACCESS  read-write
+		        STATUS      current
+		        DESCRIPTION
+			      "tx power mode"
+			      DEFVAL { standard }
+		        ::= {eponOnuWifiEntry 10 } 
+
+		    eponOnuWifiSsidTable   OBJECT-TYPE
+		        SYNTAX      SEQUENCE OF EponOnuWifiSsidEntry
+		        MAX-ACCESS  not-accessible
+		        STATUS      current
+		        DESCRIPTION
+		        "A list of eponOnuWifiSsidTable entries."
+		        ::= {eponOnuWifiGroup 2 }
+
+		    eponOnuWifiSsidEntry  OBJECT-TYPE
+		        SYNTAX      EponOnuWifiSsidEntry
+		        MAX-ACCESS  not-accessible
+		        STATUS      current
+		        DESCRIPTION  
+		        "The eponOnuWifiSsidEntry Information"
+		        INDEX       { eponOnuWifiSsidOnuIndex, eponOnuWifiSsidIndex }   
+		        ::={eponOnuWifiSsidTable 1 }   
+
+		    EponOnuWifiSsidEntry ::= SEQUENCE {
+		        eponOnuWifiSsidOnuIndex         EponDeviceIndex,
+		        eponOnuWifiSsidIndex            INTEGER,
+		        eponOnuWifiSsidName             OCTET STRING,
+		        eponOnuWifiSsidEncryptMode      INTEGER, 
+		        eponOnuWifiSsidEncryptKey       OCTET STRING, 
+		        eponOnuWifiSsidEnable           INTEGER,
+		        eponOnuWifiSsidBroadcastEnable  INTEGER, 
+		        eponOnuWifiSsidMaxUser          INTEGER, 
+		        eponOnuWifiSsidRowStatus        RowStatus
+		      } 
+
+		    eponOnuWifiSsidOnuIndex   OBJECT-TYPE
+		        SYNTAX      EponDeviceIndex
+		        MAX-ACCESS  not-accessible
+		        STATUS      current
+		        DESCRIPTION
+		        ""
+		        ::= {eponOnuWifiSsidEntry 1 }  
+
+		    eponOnuWifiSsidIndex  OBJECT-TYPE
+		        SYNTAX      INTEGER(1..4)
+		        MAX-ACCESS  not-accessible
+		        STATUS      current
+		        DESCRIPTION
+		        ""
+		        ::= {eponOnuWifiSsidEntry 2 }  
+
+		    eponOnuWifiSsidName   OBJECT-TYPE
+		        SYNTAX      OCTET STRING (SIZE (0..32))
+		        MAX-ACCESS  read-create
+		        STATUS      current
+		        DESCRIPTION
+			      "HGW SSID name, end with NULL"
+		        ::= {eponOnuWifiSsidEntry 3 }  
+
+		    eponOnuWifiSsidEncryptMode    OBJECT-TYPE
+		        SYNTAX      INTEGER
+		        {
+		        			none(0),
+		        			wep(1),
+		        			wpa(2),
+		        			wpa2(3),
+		        			wpa-wpa2(4)
+		        }
+		        MAX-ACCESS  read-create
+		        STATUS      current
+		        DESCRIPTION
+		        "HGW WLAN encryption mode"
+			      DEFVAL { wpa-wpa2 }
+		        ::= {eponOnuWifiSsidEntry 4 }  
+
+		    eponOnuWifiSsidEncryptKey  OBJECT-TYPE
+		        SYNTAX      OCTET STRING (SIZE (0..64))
+		        MAX-ACCESS  read-create
+		        STATUS      current
+		        DESCRIPTION
+			      "HGW wireless password, end with NULL"
+		        ::= {eponOnuWifiSsidEntry 5 }  
+
+		    eponOnuWifiSsidEnable   OBJECT-TYPE
+		        SYNTAX      INTEGER
+		        {
+		        			enable(1),
+		        			disable(2)
+		        }
+		        MAX-ACCESS  read-create
+		        STATUS      current
+		        DESCRIPTION
+			      "HGW ssid enable or disable"
+			      DEFVAL { enable }
+		        ::= {eponOnuWifiSsidEntry 6 }
+
+		    eponOnuWifiSsidBroadcastEnable   OBJECT-TYPE
+		        SYNTAX      INTEGER
+		        {
+		        			enable(1),
+		        			disable(2)
+		        }
+		        MAX-ACCESS  read-create
+		        STATUS      current
+		        DESCRIPTION
+			      "HGW ssid broadcast enable/disable"
+			      DEFVAL { enable }
+		        ::= {eponOnuWifiSsidEntry 7 }  
+
+		    eponOnuWifiSsidMaxUser   OBJECT-TYPE
+			      SYNTAX INTEGER(0..128)
+		        MAX-ACCESS  read-create
+		        STATUS      current
+		        DESCRIPTION
+			      "HGW limit max access users quantity, default: 0-not limited"
+			      DEFVAL { 0 }
+		        ::= {eponOnuWifiSsidEntry 8 }  
+
+		    eponOnuWifiSsidRowStatus   OBJECT-TYPE
+			      SYNTAX RowStatus
+			      MAX-ACCESS read-create
+			      STATUS current
+			      DESCRIPTION
+				    ""
+		        ::= {eponOnuWifiSsidEntry 9 }
+
+		    eponOnuWifiWanTable   OBJECT-TYPE
+		        SYNTAX      SEQUENCE OF EponOnuWifiWanEntry
+		        MAX-ACCESS  not-accessible
+		        STATUS      current
+		        DESCRIPTION
+		        "A list of eponOnuWifiWanTable entries."
+		        ::= {eponOnuWifiGroup 3 }
+
+		    eponOnuWifiWanEntry  OBJECT-TYPE
+		        SYNTAX      EponOnuWifiWanEntry
+		        MAX-ACCESS  not-accessible
+		        STATUS      current
+		        DESCRIPTION  
+		        "The eponOnuWifiWanEntry Information"
+		        INDEX       { eponOnuWifiWanOnuIndex, eponOnuWifiWanIndex }   
+		        ::={eponOnuWifiWanTable 1 }   
+
+		    EponOnuWifiWanEntry ::= SEQUENCE {
+		        eponOnuWifiWanOnuIndex          EponDeviceIndex,
+		        eponOnuWifiWanIndex             INTEGER,
+		        eponOnuWifiWanName              OCTET STRING,
+		        eponOnuWifiWanMtu               INTEGER, 
+		        eponOnuWifiWanVid               INTEGER, 
+		        eponOnuWifiWanPrio              INTEGER,
+		        eponOnuWifiWanMode              INTEGER, 
+		        eponOnuWifiWanIpMode            INTEGER, 
+		        eponOnuWifiWanPppoeUser         OCTET STRING,  
+		        eponOnuWifiWanPppoePassword     OCTET STRING,  
+		        eponOnuWifiWanIpv4Addr          IpAddress, 
+		        eponOnuWifiWanIpv4Mask          IpAddress, 
+		        eponOnuWifiWanIpv4Gw            IpAddress, 
+		        eponOnuWifiWanIpv4DnsPrimary    IpAddress, 
+		        eponOnuWifiWanIpv4DnsSecondary  IpAddress, 
+		        eponOnuWifiWanIpv4RowStatus     RowStatus
+		      } 
+
+		    eponOnuWifiWanOnuIndex   OBJECT-TYPE
+		        SYNTAX      EponDeviceIndex
+		        MAX-ACCESS  not-accessible
+		        STATUS      current
+		        DESCRIPTION
+		        ""
+		        ::= {eponOnuWifiWanEntry 1 }  
+
+		    eponOnuWifiWanIndex  OBJECT-TYPE
+		        SYNTAX      INTEGER(1..8)
+		        MAX-ACCESS  not-accessible
+		        STATUS      current
+		        DESCRIPTION
+		        ""
+		        ::= {eponOnuWifiWanEntry 2 }  
+
+		    eponOnuWifiWanName   OBJECT-TYPE
+		        SYNTAX      OCTET STRING (SIZE (0..32))
+		        MAX-ACCESS  read-create
+		        STATUS      current
+		        DESCRIPTION
+			      "end with NULL"
+		        ::= {eponOnuWifiWanEntry 3 }  
+
+		    eponOnuWifiWanMtu    OBJECT-TYPE
+		        SYNTAX      INTEGER(64..1500)
+		        MAX-ACCESS  read-create
+		        STATUS      current
+		        DESCRIPTION
+		        ""
+			      DEFVAL { 1500 }
+		        ::= {eponOnuWifiWanEntry 4 }  
+
+		    eponOnuWifiWanVid  OBJECT-TYPE
+		        SYNTAX      INTEGER(0..4094)
+		        MAX-ACCESS  read-create
+		        STATUS      current
+		        DESCRIPTION
+			      ""
+			      DEFVAL { 0 }
+		        ::= {eponOnuWifiWanEntry 5 }  
+
+		    eponOnuWifiWanPrio   OBJECT-TYPE
+		        SYNTAX      INTEGER(0..7)
+		        MAX-ACCESS  read-create
+		        STATUS      current
+		        DESCRIPTION
+			      ""
+			      DEFVAL { 0 }
+		        ::= {eponOnuWifiWanEntry 6 }
+
+		    eponOnuWifiWanMode   OBJECT-TYPE
+		        SYNTAX      INTEGER
+		        {
+		        			router(1),
+		        			bridge(2)
+		        }
+		        MAX-ACCESS  read-create
+		        STATUS      current
+		        DESCRIPTION
+			      ""
+			      DEFVAL { router }
+		        ::= {eponOnuWifiWanEntry 7 } 
+
+		    eponOnuWifiWanIpMode   OBJECT-TYPE
+		        SYNTAX      INTEGER
+		        {
+		        			bridge(0),
+		        			dhcp(1),
+		        			static(2),
+		        			pppoe(3)
+		        }
+		        MAX-ACCESS  read-create
+		        STATUS      current
+		        DESCRIPTION
+			      ""
+			      DEFVAL { bridge }
+		        ::= {eponOnuWifiWanEntry 8 }  
+
+		    eponOnuWifiWanPppoeUser   OBJECT-TYPE
+			      SYNTAX OCTET STRING (SIZE (0..32))
+		        MAX-ACCESS  read-create
+		        STATUS      current
+		        DESCRIPTION
+			      "end with NULL"
+		        ::= {eponOnuWifiWanEntry 9 }  
+
+		    eponOnuWifiWanPppoePassword   OBJECT-TYPE
+			      SYNTAX OCTET STRING (SIZE (0..16))
+		        MAX-ACCESS  read-create
+		        STATUS      current
+		        DESCRIPTION
+			      "end with NULL"
+		        ::= {eponOnuWifiWanEntry 10 } 
+		
+		    eponOnuWifiWanIpv4Addr OBJECT-TYPE
+			      SYNTAX IpAddress
+			      MAX-ACCESS read-create
+			      STATUS current
+			      DESCRIPTION
+				    "valid under static mode only"
+			      ::= { eponOnuWifiWanEntry 11 }
+
+		    eponOnuWifiWanIpv4Mask OBJECT-TYPE
+			      SYNTAX IpAddress
+			      MAX-ACCESS read-create
+			      STATUS current
+			      DESCRIPTION
+				    "valid under static mode only"
+			      ::= { eponOnuWifiWanEntry 12 }
+
+		    eponOnuWifiWanIpv4Gw OBJECT-TYPE
+			      SYNTAX IpAddress
+			      MAX-ACCESS read-create
+			      STATUS current
+			      DESCRIPTION
+				    "valid under static mode only"
+			      ::= { eponOnuWifiWanEntry 13 }
+
+		    eponOnuWifiWanIpv4DnsPrimary OBJECT-TYPE
+			      SYNTAX IpAddress
+			      MAX-ACCESS read-create
+			      STATUS current
+			      DESCRIPTION
+				    "valid under static mode only"
+			      ::= { eponOnuWifiWanEntry 14 }
+
+		    eponOnuWifiWanIpv4DnsSecondary OBJECT-TYPE
+			      SYNTAX IpAddress
+			      MAX-ACCESS read-create
+			      STATUS current
+			      DESCRIPTION
+				    "valid under static mode only"
+			      ::= { eponOnuWifiWanEntry 15 }
+
+        eponOnuWifiWanIpv4RowStatus OBJECT-TYPE
+			      SYNTAX RowStatus
+			      MAX-ACCESS read-create
+			      STATUS current
+			      DESCRIPTION
+				    ""
+		        ::= {eponOnuWifiWanEntry 16 }	        	        
+		        
+		    eponOnuWifiDataWanTable   OBJECT-TYPE
+		        SYNTAX      SEQUENCE OF EponOnuWifiDataWanEntry
+		        MAX-ACCESS  not-accessible
+		        STATUS      current
+		        DESCRIPTION
+		        "A list of eponOnuWifiDataWanTable entries."
+		        ::= {eponOnuWifiGroup 4 }
+
+		    eponOnuWifiDataWanEntry  OBJECT-TYPE
+		        SYNTAX      EponOnuWifiDataWanEntry
+		        MAX-ACCESS  not-accessible
+		        STATUS      current
+		        DESCRIPTION  
+		        "The eponOnuWifiDataWanEntry Information"
+		        INDEX       { eponOnuWifiDataWanOnuIndex, eponOnuWifiDataWanIndex }   
+		        ::={eponOnuWifiDataWanTable 1 }   
+
+		    EponOnuWifiDataWanEntry ::= SEQUENCE {
+		        eponOnuWifiDataWanOnuIndex      EponDeviceIndex,
+		        eponOnuWifiDataWanIndex         INTEGER,	        
+		        eponOnuWifiDataWanServiceType   INTEGER, 
+		        eponOnuWifiDataWanBindIf        OCTET STRING
+		      } 
+
+		    eponOnuWifiDataWanOnuIndex   OBJECT-TYPE
+		        SYNTAX      EponDeviceIndex
+		        MAX-ACCESS  not-accessible
+		        STATUS      current
+		        DESCRIPTION
+		        ""
+		        ::= {eponOnuWifiDataWanEntry 1 }  
+
+		    eponOnuWifiDataWanIndex  OBJECT-TYPE
+		        SYNTAX      INTEGER(1..8)
+		        MAX-ACCESS  not-accessible
+		        STATUS      current
+		        DESCRIPTION
+		        ""
+		        ::= {eponOnuWifiDataWanEntry 2 }  
+
+--		    eponOnuWifiDataWanConnectMode    OBJECT-TYPE
+--		        SYNTAX      INTEGER
+--		        {
+--		        			router(1),
+--		        			bridge(2)
+--		        }
+--		        MAX-ACCESS  read-write
+--		        STATUS      current
+--		        DESCRIPTION
+--			      ""
+--			      DEFVAL { router }
+--		        ::= {eponOnuWifiDataWanEntry 3 }  
+
+		    eponOnuWifiDataWanServiceType   OBJECT-TYPE
+		        SYNTAX      INTEGER
+		        {
+		        			internet(1),
+		        			vod(2),
+		        			voip(3),
+		        			mgmt(4),
+		        			tr069(5)
+		        }
+		        MAX-ACCESS  read-write
+		        STATUS      current
+		        DESCRIPTION
+			      ""
+			      DEFVAL { internet }
+		        ::= {eponOnuWifiDataWanEntry 3 }  
+
+		    eponOnuWifiDataWanBindIf   OBJECT-TYPE
+		        SYNTAX      OCTET STRING (SIZE(4))
+			      --  {
+			      --  			none(0),
+			      --  			ssid1(1),
+			      --  			ssid2(2),
+			      --  			ssid3(4),
+			      --  			ssid4(8),
+			      --  			lan1(16),
+			      --  			lan2(32),
+			      --  			lan3(64),
+			      --  			lan4(128),
+			      --  			lan5(256),
+			      --  			lan6(512),
+			      --  			lan7(1024),
+			      --  			lan8(2048)
+			      --  }
+		        MAX-ACCESS  read-write
+		        STATUS      current
+		        DESCRIPTION
+			      "none(0): not bound, default value
+			      SSID supported 1-4 only
+			      4 octets:
+            00000000 00000000 0000 0    0    0    0    0    0    0    0     0     0     0     0
+                                   lan8 lan7 lan6 lan5 lan4 lan3 lan2 lan1  ssid4 ssid3 ssid2 ssid1
+			      "
+			      --	DEFVAL { none }
+		        ::= {eponOnuWifiDataWanEntry 4 }
+		        
+		    eponOnuWifiUpgradeTable   OBJECT-TYPE
+		        SYNTAX      SEQUENCE OF EponOnuWifiUpgradeEntry
+		        MAX-ACCESS  not-accessible
+		        STATUS      current
+		        DESCRIPTION
+		        "A list of eponOnuWifiUpgradeTable entries."
+		        ::= {eponOnuWifiGroup 5 }
+
+		    eponOnuWifiUpgradeEntry  OBJECT-TYPE
+		        SYNTAX      EponOnuWifiUpgradeEntry
+		        MAX-ACCESS  not-accessible
+		        STATUS      current
+		        DESCRIPTION  
+		        "The eponOnuWifiUpgradeEntry Information"
+		        INDEX       { eponOnuWifiUpgradeOnuIndex }   
+		        ::={eponOnuWifiUpgradeTable 1 }   
+
+		    EponOnuWifiUpgradeEntry ::= SEQUENCE {
+		        eponOnuWifiUpgradeOnuIndex         EponDeviceIndex,
+		        eponOnuWifiUpgradeFileType         INTEGER,	        
+		        eponOnuWifiUpgradeFileName         OCTET STRING, 
+		        eponOnuWifiUpgradeTransportType    INTEGER, 
+		        eponOnuWifiUpgradeServerIpv4Addr   IpAddress,
+		        eponOnuWifiUpgradeServerPort       INTEGER,
+		        eponOnuWifiUpgradeUser             OCTET STRING, 
+		        eponOnuWifiUpgradePassword         OCTET STRING, 
+		        eponOnuWifiUpgradeClearFlag        INTEGER, 
+		        eponOnuWifiUpgradeProceed          INTEGER
+		      } 
+
+		    eponOnuWifiUpgradeOnuIndex   OBJECT-TYPE
+		        SYNTAX      EponDeviceIndex
+		        MAX-ACCESS  not-accessible
+		        STATUS      current
+		        DESCRIPTION
+		        ""
+		        ::= {eponOnuWifiUpgradeEntry 1 }  
+
+		    eponOnuWifiUpgradeFileType  OBJECT-TYPE
+		        SYNTAX      INTEGER
+		        {
+		        			image(1),
+		        			config(2)
+		        }
+		        MAX-ACCESS  read-write
+		        STATUS      current
+		        DESCRIPTION
+		        ""
+		        ::= {eponOnuWifiUpgradeEntry 2 }  
+
+		    eponOnuWifiUpgradeFileName    OBJECT-TYPE
+		        SYNTAX      OCTET STRING (SIZE (0..32))
+		        MAX-ACCESS  read-write
+		        STATUS      current
+		        DESCRIPTION
+			      ""
+		        ::= {eponOnuWifiUpgradeEntry 3 }  
+
+		    eponOnuWifiUpgradeTransportType    OBJECT-TYPE
+		        SYNTAX      INTEGER
+		        {
+		        			ftp(0)
+		        }
+		        MAX-ACCESS  read-write
+		        STATUS      current
+		        DESCRIPTION
+			      ""
+			      DEFVAL { ftp }
+		        ::= {eponOnuWifiUpgradeEntry 4 }  
+
+		    eponOnuWifiUpgradeServerIpv4Addr   OBJECT-TYPE
+		        SYNTAX      IpAddress
+		        MAX-ACCESS  read-write
+		        STATUS      current
+		        DESCRIPTION
+			      ""
+		        ::= {eponOnuWifiUpgradeEntry 5 }
+		        
+		    eponOnuWifiUpgradeServerPort   OBJECT-TYPE
+		        SYNTAX      INTEGER
+		        MAX-ACCESS  read-write
+		        STATUS      current
+		        DESCRIPTION
+			      ""
+			      DEFVAL { 23 }
+		        ::= {eponOnuWifiUpgradeEntry 6 }
+
+		    eponOnuWifiUpgradeUser   OBJECT-TYPE
+			      SYNTAX OCTET STRING (SIZE (0..32))
+		        MAX-ACCESS  read-write
+		        STATUS      current
+		        DESCRIPTION
+			      "end with NULL"
+		        ::= {eponOnuWifiUpgradeEntry 7 }  
+
+		    eponOnuWifiUpgradePassword   OBJECT-TYPE
+			      SYNTAX OCTET STRING (SIZE (0..16))
+		        MAX-ACCESS  read-write
+		        STATUS      current
+		        DESCRIPTION
+			      "end with NULL"
+		        ::= {eponOnuWifiUpgradeEntry 8 } 
+
+		    eponOnuWifiUpgradeClearFlag   OBJECT-TYPE
+		        SYNTAX      INTEGER
+		        {
+		        			notclear(1),
+		        			clear(2)
+		        }
+		        MAX-ACCESS  read-write
+		        STATUS      current
+		        DESCRIPTION
+			      "read value is notclear always"
+			      DEFVAL { notclear }			      
+		        ::= {eponOnuWifiUpgradeEntry 9 }
+
+		    eponOnuWifiUpgradeProceed   OBJECT-TYPE
+		        SYNTAX      INTEGER
+		        {
+                  invalid(0),
+		        			downloadAndUpgrade(1)
+		        }
+		        MAX-ACCESS  read-write
+		        STATUS      current
+		        DESCRIPTION
+			      "read value is invalid always"
+		        ::= {eponOnuWifiUpgradeEntry 10 }
+
+		    eponOnuWifiWanStatusTable   OBJECT-TYPE
+		        SYNTAX      SEQUENCE OF EponOnuWifiWanStatusEntry
+		        MAX-ACCESS  not-accessible
+		        STATUS      current
+		        DESCRIPTION
+		        "A list of eponOnuWifiWanStatusTable entries."
+		        ::= {eponOnuWifiGroup 6 }
+
+		    eponOnuWifiWanStatusEntry  OBJECT-TYPE
+		        SYNTAX      EponOnuWifiWanStatusEntry
+		        MAX-ACCESS  not-accessible
+		        STATUS      current
+		        DESCRIPTION  
+		        "The eponOnuWifiWanStatusEntry Information"
+		        INDEX       { eponOnuWifiWanStatusOnuIndex, eponOnuWifiWanStatusWanIndex }   
+		        ::={eponOnuWifiWanStatusTable 1 }   
+
+		    EponOnuWifiWanStatusEntry ::= SEQUENCE {
+		        eponOnuWifiWanStatusOnuIndex            EponDeviceIndex,
+		        eponOnuWifiWanStatusWanIndex            INTEGER,	        
+		        eponOnuWifiWanStatusWanName             OCTET STRING, 
+		        eponOnuWifiWanStatusWanIpMode           INTEGER, 
+		        eponOnuWifiWanStatusConnState           INTEGER,
+		        eponOnuWifiPppoeStatusErrCode           INTEGER, 
+		        eponOnuWifiPppoeStatusIpv4Addr          IpAddress, 
+		        eponOnuWifiPppoeStatusIpv4Mask          IpAddress, 
+		        eponOnuWifiPppoeStatusIpv4Gw            IpAddress, 
+		        eponOnuWifiPppoeStatusIpv4DnsPrimary    IpAddress, 
+		        eponOnuWifiPppoeStatusIpv4DnsSecondary  IpAddress
+		      }
+
+		    eponOnuWifiWanStatusOnuIndex   OBJECT-TYPE
+		        SYNTAX      EponDeviceIndex
+		        MAX-ACCESS  not-accessible
+		        STATUS      current
+		        DESCRIPTION
+		        "max-access changed into read-only for the purpose of coding convenience"
+		        ::= {eponOnuWifiWanStatusEntry 1 }  
+
+		    eponOnuWifiWanStatusWanIndex  OBJECT-TYPE
+		        SYNTAX      INTEGER
+		        MAX-ACCESS  not-accessible
+		        STATUS      current
+		        DESCRIPTION
+		        ""
+		        ::= {eponOnuWifiWanStatusEntry 2 }  
+
+		    eponOnuWifiWanStatusWanName    OBJECT-TYPE
+		        SYNTAX      OCTET STRING (SIZE (0..255))
+		        MAX-ACCESS  read-only
+		        STATUS      current
+		        DESCRIPTION
+			      ""
+		        ::= {eponOnuWifiWanStatusEntry 3 }  
+
+		    eponOnuWifiWanStatusWanIpMode    OBJECT-TYPE
+		        SYNTAX      INTEGER
+		        {
+		        			bridge(1),
+		        			dhcp(2),
+		        			pppoe(3),
+		        			static(4)
+		        }
+		        MAX-ACCESS  read-only
+		        STATUS      current
+		        DESCRIPTION
+			      ""
+		        ::= {eponOnuWifiWanStatusEntry 4 }  
+
+		    eponOnuWifiWanStatusConnState   OBJECT-TYPE
+		        SYNTAX      INTEGER
+		        {
+		        			disconnect(0),
+		        			connect(1)
+		        }
+		        MAX-ACCESS  read-only
+		        STATUS      current
+		        DESCRIPTION
+			      ""
+		        ::= {eponOnuWifiWanStatusEntry 5 }	        
+
+		    eponOnuWifiPppoeStatusErrCode   OBJECT-TYPE
+			      SYNTAX INTEGER
+		        MAX-ACCESS  read-only
+		        STATUS      current
+		        DESCRIPTION
+			      ""
+		        ::= {eponOnuWifiWanStatusEntry 6 }  
+
+		    eponOnuWifiPppoeStatusIpv4Addr OBJECT-TYPE
+			      SYNTAX IpAddress
+			      MAX-ACCESS read-only
+			      STATUS current
+			      DESCRIPTION
+				    ""
+			      ::= { eponOnuWifiWanStatusEntry 7 }
+
+		    eponOnuWifiPppoeStatusIpv4Mask OBJECT-TYPE
+			      SYNTAX IpAddress
+			      MAX-ACCESS read-only
+			      STATUS current
+			      DESCRIPTION
+				    ""
+			      ::= { eponOnuWifiWanStatusEntry 8 }
+
+		    eponOnuWifiPppoeStatusIpv4Gw OBJECT-TYPE
+			      SYNTAX IpAddress
+			      MAX-ACCESS read-only
+			      STATUS current
+			      DESCRIPTION
+				    ""
+			      ::= { eponOnuWifiWanStatusEntry 9 }
+
+		    eponOnuWifiPppoeStatusIpv4DnsPrimary OBJECT-TYPE
+			      SYNTAX IpAddress
+			      MAX-ACCESS read-only
+			      STATUS current
+			      DESCRIPTION
+				    ""
+			      ::= { eponOnuWifiWanStatusEntry 10 }
+
+		    eponOnuWifiPppoeStatusIpv4DnsSecondary OBJECT-TYPE
+			      SYNTAX IpAddress
+			      MAX-ACCESS read-only
+			      STATUS current
+			      DESCRIPTION
+				    ""
+			      ::= { eponOnuWifiWanStatusEntry 11 }
+
+        
+END

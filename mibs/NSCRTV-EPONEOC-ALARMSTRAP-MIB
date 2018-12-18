@@ -1,0 +1,167 @@
+NSCRTV-EPONEOC-ALARMSTRAP-MIB DEFINITIONS ::= BEGIN
+
+     IMPORTS
+          TRAP-TYPE
+               FROM RFC-1215
+          OBJECT-TYPE
+               FROM RFC-1212
+          NOTIFICATION-TYPE
+               FROM SNMPv2-SMI
+          DisplayString
+               FROM RFC1213-MIB  
+          nscrtvEponEocAlarmTrapTree
+               FROM NSCRTV-ROOT
+     ; 
+     nscrtvEponEocAlarmAnalog  OBJECT IDENTIFIER  ::= { nscrtvEponEocAlarmTrapTree 1 } 
+     --模拟类trap告警
+     temperatureOfAlarmAnalog OBJECT-TYPE
+          SYNTAX OCTET STRING (SIZE (0..255))
+          ACCESS read-only
+          STATUS mandatory
+          DESCRIPTION
+                    " 200903 环境温度告警以及恢复"
+          ::= { nscrtvEponEocAlarmAnalog 1 }
+          
+     cpuOfAlarmAnalog OBJECT-TYPE
+          SYNTAX OCTET STRING (SIZE (0..255))
+          ACCESS read-only
+          STATUS mandatory
+          DESCRIPTION
+                    " 200904 CBAT管理CPU负载过高告警以及恢复"
+          ::= { nscrtvEponEocAlarmAnalog 2 }
+          
+     memoryOfAlarmAnalog OBJECT-TYPE
+          SYNTAX OCTET STRING (SIZE (0..255))
+          ACCESS read-only
+          STATUS mandatory
+          DESCRIPTION
+                    " 200905 CBAT内存利用率过高告警"
+          ::= { nscrtvEponEocAlarmAnalog 3 }
+          
+     yawpOfAlarmAnalog OBJECT-TYPE
+          SYNTAX OCTET STRING (SIZE (0..255))
+          ACCESS read-only
+          STATUS mandatory
+          DESCRIPTION
+                    " 200906 噪声过高告警"
+          ::= { nscrtvEponEocAlarmAnalog 4 }
+          
+     attenuationOfAlarmAnalog OBJECT-TYPE
+          SYNTAX OCTET STRING (SIZE (0..255))
+          ACCESS read-only
+          STATUS mandatory
+          DESCRIPTION
+                    " 200907 链路衰减告警"
+          ::= { nscrtvEponEocAlarmAnalog 5 }
+          
+     velocityOfAlarmAnalog OBJECT-TYPE
+          SYNTAX OCTET STRING (SIZE (0..255))
+          ACCESS read-only
+          STATUS mandatory
+          DESCRIPTION
+                    " 200908 物理层速率告警"
+          ::= { nscrtvEponEocAlarmAnalog 6 }
+          
+     nscrtvEponEocAlarmDiscrete  OBJECT IDENTIFIER  ::= { nscrtvEponEocAlarmTrapTree 2 }
+     --离散类trap告警
+     cltstartOfAlarmDiscrete OBJECT-TYPE
+          SYNTAX OCTET STRING (SIZE (0..255))
+          ACCESS read-only
+          STATUS mandatory
+          DESCRIPTION
+                    " 200901 CLT上下线"
+          ::= { nscrtvEponEocAlarmDiscrete 1 }
+          
+     cnustartOfAlarmDiscrete OBJECT-TYPE
+          SYNTAX OCTET STRING (SIZE (0..255))
+          ACCESS read-only
+          STATUS mandatory
+          DESCRIPTION
+                    " 200902 CNU上下线"
+          ::= { nscrtvEponEocAlarmDiscrete 2 }
+          
+     autoupgradeOfAlarmDiscrete OBJECT-TYPE
+          SYNTAX OCTET STRING (SIZE (0..255))
+          ACCESS read-only
+          STATUS mandatory
+          DESCRIPTION
+                    " 200909 自动升级失败事件"
+          ::= { nscrtvEponEocAlarmDiscrete 3 }
+          
+     autoconfigOfAlarmDiscrete OBJECT-TYPE
+          SYNTAX OCTET STRING (SIZE (0..255))
+          ACCESS read-only
+          STATUS mandatory
+          DESCRIPTION
+                    " 200910 自动配置失败事件"
+          ::= { nscrtvEponEocAlarmDiscrete 4 }
+          
+     indexrepeatOfAlarmDiscrete OBJECT-TYPE
+          SYNTAX OCTET STRING (SIZE (0..255))
+          ACCESS read-only
+          STATUS mandatory
+          DESCRIPTION
+                    " 200911 INDEX重复告警以及恢复"
+          ::= { nscrtvEponEocAlarmDiscrete 5 }
+          
+     nscrtvEponEocAlarmGroup  OBJECT IDENTIFIER  ::= { nscrtvEponEocAlarmTrapTree 5 }
+     --trap告警格式定义
+     
+     alarmCodeOfTraps OBJECT-TYPE
+          SYNTAX INTEGER
+          ACCESS read-only
+          STATUS mandatory
+          DESCRIPTION
+                    "告警码"
+          ::= { nscrtvEponEocAlarmGroup 1 }
+          
+     alarmStreamingNoOfTraps OBJECT-TYPE
+          SYNTAX INTEGER
+          ACCESS read-only
+          STATUS mandatory
+          DESCRIPTION
+                    "告警流水号"
+          ::= { nscrtvEponEocAlarmGroup 2 }
+          
+     alarmMACOfTraps OBJECT-TYPE
+          SYNTAX OCTET STRING (SIZE (0..255))
+          ACCESS read-only
+          STATUS mandatory
+          DESCRIPTION
+                    "主机框MAC地址"
+          ::= { nscrtvEponEocAlarmGroup 3 }
+          
+     alarmCLTIndexOfTraps OBJECT-TYPE
+          SYNTAX INTEGER
+          ACCESS read-only
+          STATUS mandatory
+          DESCRIPTION
+                    "CLT索引"
+          ::= { nscrtvEponEocAlarmGroup 4 }
+          
+     alarmCNUIndexOfTraps OBJECT-TYPE
+          SYNTAX INTEGER
+          ACCESS read-only
+          STATUS mandatory
+          DESCRIPTION
+                    "CNU索引"
+          ::= { nscrtvEponEocAlarmGroup 5 }
+          
+     alarmTypeOfTraps OBJECT-TYPE
+          SYNTAX INTEGER
+          ACCESS read-only
+          STATUS mandatory
+          DESCRIPTION
+                    "告警类型"
+          ::= { nscrtvEponEocAlarmGroup 6 }
+     
+     alarmValueOfTraps OBJECT-TYPE
+          SYNTAX INTEGER
+          ACCESS read-only
+          STATUS mandatory
+          DESCRIPTION
+                    "告警参数值"
+          ::= { nscrtvEponEocAlarmGroup 7 }
+
+END
+

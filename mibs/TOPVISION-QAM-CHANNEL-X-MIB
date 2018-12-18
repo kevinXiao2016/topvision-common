@@ -1,0 +1,59 @@
+TOPVISION-QAM-CHANNEL-X-MIB DEFINITIONS ::= BEGIN
+
+IMPORTS    
+        MODULE-IDENTITY,
+    	OBJECT-TYPE,
+    	Integer32, 
+    	Unsigned32
+        	FROM SNMPv2-SMI 
+        qamChannelEntry
+            FROM SCTE-HMS-QAM-MIB  	
+        topCcmtsMibObject
+        	FROM  TOPVISION-CCMTS-MIB;                  
+
+topCcmtsQamObject  OBJECT IDENTIFIER ::= { topCcmtsMibObject 24}
+
+-- Description
+-- Extension to the qam-channel table 
+
+qamChannelXTable	OBJECT-TYPE
+	SYNTAX			SEQUENCE OF QamChannelXEntry
+	MAX-ACCESS		not-accessible
+	STATUS			current
+	DESCRIPTION
+		"This table describes the configuration and attributes of each
+		QAM channel of the QAM designated by ifIndex.This table contains
+        additional objects for the QAM channel table."
+    ::= {topCcmtsQamObject 1}
+    
+qamChannelXEntry	OBJECT-TYPE
+	SYNTAX			QamChannelXEntry
+	MAX-ACCESS		not-accessible
+	STATUS			current
+	DESCRIPTION   
+		"There is an entry containing additional infomation about QAM channel." 
+	AUGMENTS		{ qamChannelEntry }
+	::= { qamChannelXTable 1 }
+	
+QamChannelXEntry ::= SEQUENCE {   
+		qamChannelId			Unsigned32,
+		qamChannelSymbolRate	Unsigned32		
+}   
+	
+qamChannelId OBJECT-TYPE  
+	SYNTAX		Unsigned32
+	MAX-ACCESS  read-only
+	STATUS		current
+	DESCRIPTION
+		"The channel ID of EQAM channel"  
+	::= { qamChannelXEntry 1}
+	
+qamChannelSymbolRate OBJECT-TYPE
+	SYNTAX		Unsigned32
+	MAX-ACCESS	read-only
+	STATUS		current
+	DESCRIPTION
+		"The symbol rate of EQAM channel.
+		 Unit: sym/s"
+	::= { qamChannelXEntry 2}      
+END

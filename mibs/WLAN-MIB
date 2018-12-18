@@ -1,0 +1,371 @@
+-- **** Copyright (c) AvantCom Corporation 2003 - 2004 ***
+-- **** All rights reserved ***
+--  __________________________________________________________________
+--  |                                                                |
+--  |      Copyright (c) 2003 - 2004  -  AvantCom Corporation        |
+--  |                                                                |
+--  |    This material is the exclusive confidential property of     |
+--  |    AvantCom Corporation. All rights, including copyrights      |
+--  |    and patent rights, are reserved. No copies of any portion   |
+--  |    are to be made by any means without the express written     |
+--  |    permission of AvantCom Corporation.                         |
+--  |________________________________________________________________|
+-- 
+-- **********************************************************************
+-- *  File Name:           AVANTCOM-EXP-80211-MIB.txt
+-- *                                                                           
+-- *  Comments:                                                                
+-- *                                                                           
+-- *  Author:              Larry Simmons                                       
+-- *                       lsimmons@avantcom.com                               
+-- *                       www.avantcom.com                                    
+-- *                                                                           
+-- *  Creation Date:       09/24/03                                            
+-- *                                                                           
+-- *   Ver    Date   Inits Modification                                        
+-- *  ----- -------- ----- ------------                                        
+-- *  0.0.1 09/24/03  LRS  created                                             
+-- **********************************************************************
+-- **********************************************************************
+-- **********************************************************************
+-- * AvantCom 802.11 Management Information Base
+-- **********************************************************************
+WLAN-MIB DEFINITIONS ::= BEGIN
+
+-- IMPORTS
+--     experimental
+
+   IMPORTS
+        MODULE-IDENTITY, OBJECT-TYPE, 
+        NOTIFICATION-TYPE,Integer32, Counter32,IpAddress  FROM SNMPv2-SMI
+        DisplayString , MacAddress, RowStatus, PhysAddress,
+        TruthValue                              FROM SNMPv2-TC
+        MODULE-COMPLIANCE, OBJECT-GROUP, 
+        NOTIFICATION-GROUP                      FROM SNMPv2-CONF 
+        ifIndex                                 FROM RFC1213-MIB;
+
+-- **********************************************************************
+-- *  MODULE IDENTITY
+-- **********************************************************************
+    topvisionWlanTree MODULE-IDENTITY
+    LAST-UPDATED "200309230000Z"
+    ORGANIZATION ""
+    CONTACT-INFO 
+           "Editor: Larry Simmons
+            Postal: AvantCom Corporation
+                    PO Box 1112
+                    Sandpoint, ID 83860 USA
+               Tel: +1 208 265 7878
+            E-mail: lsimmons@avantcom.com
+                    www.avantcom.com"
+    DESCRIPTION
+        "The MIB module for definition of AvantCom 802.11 entities.
+        iso(1).org(3).dod(6).internet(1).experimental(3).topvision(32285)"
+    ::= { 1 3 6 1 4 1 32285 11 4}
+    
+
+autoUpgrade           OBJECT IDENTIFIER  ::= { topvisionWlanTree 18 } 
+  apStaticTftpSvip OBJECT-TYPE
+    SYNTAX IpAddress
+    MAX-ACCESS read-write
+    STATUS current
+    DESCRIPTION 
+            "tftp server ip."
+    ::= {  autoUpgrade 1 }    
+    
+  apStaticFileName OBJECT-TYPE
+    SYNTAX DisplayString  (SIZE (0..32))
+    MAX-ACCESS read-write
+    STATUS current
+    DESCRIPTION 
+            "comparing file's name.the max lenth of the file name is 32."
+    ::= {  autoUpgrade 2 }   
+
+ 
+  apActionForUpgrade OBJECT-TYPE
+    SYNTAX TruthValue
+    MAX-ACCESS read-write
+    STATUS current
+    DESCRIPTION 
+            "ap will upgrade when you set true(1), and return false(2) when you read the node."
+    ::= {  autoUpgrade 3 }       
+    
+  apUpgradeStatus  OBJECT-TYPE
+    SYNTAX INTEGER  
+    {
+          success(1),
+          failure(2)    
+    }
+
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION 
+            "the status of upgrade."
+    ::= {  autoUpgrade 4 }    
+    
+
+basicInfo        OBJECT IDENTIFIER  ::= { topvisionWlanTree 19 }  
+    
+  apIpAddr OBJECT-TYPE
+    SYNTAX IpAddress
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION 
+            "IPADDR of the ap."
+    ::= {  basicInfo 1 }    
+   
+  apMacAddr   OBJECT-TYPE
+    SYNTAX MacAddress 
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION 
+            "MACADDR of the ap."
+    ::= {  basicInfo 2 }  
+        
+  apSnNum   OBJECT-TYPE
+    SYNTAX DisplayString   (SIZE (0..32))
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION 
+            "SN number of the ap."
+    ::= {  basicInfo 3 }    
+    
+  apSoftwareVersion  OBJECT-TYPE
+    SYNTAX DisplayString     (SIZE (0..32))
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION 
+            "software version of the ap."
+    ::= {  basicInfo 4 }     
+    
+  apHardwareVersion  OBJECT-TYPE
+    SYNTAX DisplayString    (SIZE (0..32))
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION 
+            "hardware version of the ap."
+    ::= {  basicInfo 5 }           
+    
+      
+  apStatus  OBJECT-TYPE
+    SYNTAX INTEGER
+    {
+     	online(1)
+    } 
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION 
+            "status of the ap."
+    ::= {  basicInfo 6 }      
+    
+  apRebootForUpGrade OBJECT-TYPE
+    SYNTAX TruthValue  
+    MAX-ACCESS read-write
+    STATUS current
+    DESCRIPTION 
+            "ap will reboot when you set true(1) , 
+            and return false(2) when you read the node."
+    ::= {  basicInfo 7 } 
+    
+  apConfigFileVersion  OBJECT-TYPE
+    SYNTAX    DisplayString    (SIZE (0..32))
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION 
+            " version of the config file."
+    ::= {  basicInfo 8 }    
+
+snmpInfo        OBJECT IDENTIFIER  ::= { topvisionWlanTree 20 }     
+  
+  apSnmpVer  OBJECT-TYPE
+    SYNTAX   INTEGER
+    {
+    	snmpV1(1),
+    	snmpV2c(2),
+    	snmpV3(3)
+    }
+    MAX-ACCESS read-write
+    STATUS current
+    DESCRIPTION 
+            "the version of the snmp.We support V1, V2c and V3c now."
+    ::= {  snmpInfo 1 } 
+                              
+  apSnmpComRo  OBJECT-TYPE
+    SYNTAX DisplayString        (SIZE (0..32))
+    MAX-ACCESS read-write
+    STATUS current
+    DESCRIPTION 
+            "the read community of the snmp."
+    ::= {  snmpInfo 2 }         
+    
+  apSnmpComRw  OBJECT-TYPE
+    SYNTAX DisplayString         (SIZE (0..32))
+    MAX-ACCESS read-write
+    STATUS current
+    DESCRIPTION 
+            "the write community of the snmp."
+    ::= {  snmpInfo 3 }  
+      
+  apTrapVer  OBJECT-TYPE
+    SYNTAX INTEGER
+    {
+     snmpV1(1),
+     snmpV2c(2)
+    }
+    MAX-ACCESS read-write
+    STATUS current
+    DESCRIPTION 
+            "the version of the snmp.We support V1 and V2 now."
+    ::= {  snmpInfo 4 } 
+      
+  apTrapComRw  OBJECT-TYPE
+    SYNTAX DisplayString      (SIZE (0..32))
+    MAX-ACCESS read-write
+    STATUS current
+    DESCRIPTION 
+            "the write community of the snmp."
+    ::= {  snmpInfo 5 }  
+    
+  apDaemonTrapIntval  OBJECT-TYPE
+    SYNTAX INTEGER
+    UNITS       "seconds"
+    MAX-ACCESS read-write
+    STATUS current
+    DESCRIPTION 
+            "the trasmission interval of the daemon trap.0<= value <=86400.
+            when you set 0 to the value ,the daemon trap will be stop."
+    ::= {  snmpInfo 6 }     
+    
+  trapServerIpTable OBJECT-TYPE 
+  	SYNTAX      SEQUENCE OF ApTrapServerIpEntry
+    MAX-ACCESS  not-accessible
+    STATUS      current
+    DESCRIPTION "" 
+    ::= { snmpInfo 7 }     
+                                
+  apTrapServerIpEntry  OBJECT-TYPE
+    SYNTAX  ApTrapServerIpEntry
+    MAX-ACCESS not-accessible
+    STATUS current 
+    DESCRIPTION 
+            "ip of the Trap server."  
+    INDEX      { apTrapServerIndex }  
+    ::= {  trapServerIpTable 1 }      
+    
+  ApTrapServerIpEntry ::= 
+    SEQUENCE {			       
+    	apTrapServerIndex      Integer32,
+        apTrapServerIp         IpAddress, 
+        apTrapServerIpStatus      RowStatus
+    }   
+                 
+  apTrapServerIndex OBJECT-TYPE 
+    SYNTAX     Integer32 
+    MAX-ACCESS read-only
+    STATUS     current
+    DESCRIPTION "The auxiliary variable used for identifying instances
+            in the TrapServerIpTable." 
+    ::= { apTrapServerIpEntry 1 }
+             
+  apTrapServerIp  OBJECT-TYPE
+    SYNTAX  IpAddress 
+    MAX-ACCESS read-write
+    STATUS current
+    DESCRIPTION 
+            "ip of the Trap server."
+    ::= {  apTrapServerIpEntry 2 }     
+  
+  apTrapServerIpStatus  OBJECT-TYPE
+    SYNTAX  RowStatus
+    MAX-ACCESS read-create
+    STATUS current
+    DESCRIPTION 
+            "we can use this node to create or delete a row."
+    ::= {  apTrapServerIpEntry 3 }
+
+devType   OBJECT IDENTIFIER  ::= { topvisionWlanTree 21 }     
+
+  devType8101   OBJECT IDENTIFIER  ::= { devType 1 }  
+  devType8102   OBJECT IDENTIFIER  ::= { devType 2 }     
+  devType8103   OBJECT IDENTIFIER  ::= { devType 3 }     
+  
+  apCfgVersion  OBJECT-TYPE
+    SYNTAX DisplayString      (SIZE (0..32))
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION 
+            "the version of the config file."
+    ::= {  basicInfo 7 }    
+ 
+wlanTraps        OBJECT IDENTIFIER  ::= { topvisionWlanTree 100 } 
+
+privateTraps        OBJECT IDENTIFIER  ::= { wlanTraps 1 } 
+  
+  daemonTrap NOTIFICATION-TYPE  
+  	OBJECTS {  apTrapWarnLevel, apMacAddr, apSnNum, apIpAddr, apTrapCounter}
+ 	STATUS  current
+  	DESCRIPTION "The trap that is send at regular intervals." 
+  	::= { privateTraps 1 }  
+  
+  upgradeFailure NOTIFICATION-TYPE
+  	OBJECTS { apTrapWarnLevel, apErrorCode, apMacAddr, apSnNum, apIpAddr, apErrorDescr} 
+  	STATUS  current
+  	DESCRIPTION "The trap that contains the failure reason of the upgrade." 
+  	::= { privateTraps 2 }      
+  
+privateTrapsObjects        OBJECT IDENTIFIER  ::= { wlanTraps 2 } 
+    
+  apTrapWarnLevel  OBJECT-TYPE
+  	SYNTAX INTEGER
+  	{
+    	low(1),
+    	high(2)
+    }
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION 
+            "warn level of the trap."
+    ::= {  privateTrapsObjects 1 } 
+      
+  apErrorCode  OBJECT-TYPE
+    SYNTAX INTEGER 
+    {
+    	Can_not_obtain_the_danamic_ip(1),
+    	Can_not_obtain_the_information_about_tftpIP_and_name_of_cfgFile(2),
+    	Can_not_obtain_the_comparing_file(3),
+    	Can_not_obtain_the_configuration_file(4)
+    }
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION 
+            "error code of the upgrade."
+    ::= {  privateTrapsObjects 2 }     
+    
+  apErrorDescr  OBJECT-TYPE
+    SYNTAX DisplayString    (SIZE (0..255))
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION 
+            "descriprion of the upgrade error."
+    ::= {  privateTrapsObjects 3 }  
+    
+  apTrapCounter OBJECT-TYPE
+    SYNTAX Counter32  
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION 
+            "Trap counter."
+    ::= {  privateTrapsObjects 4 }  
+   
+  apTrapCounterOverflow OBJECT-TYPE
+    SYNTAX Counter32  
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION 
+            "the counter of the Trap counter's overflow."
+    ::= {  privateTrapsObjects 5 }    
+				 			 		  
+	END
+
+
+

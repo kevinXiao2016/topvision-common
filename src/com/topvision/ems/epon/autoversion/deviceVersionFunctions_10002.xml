@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--目的：为了对某一版本网管中，不同版本的设备进行统一管理。 可以根据设备的‘版本号’对该设备下的功能及子功能进行匹配展示，以便适应不同版本的设备上对同一功能的差异适配 -->
+<root deviceType="10002" deviceName="PN8602">
+	<versions><!--设备版本 -->
+		<version name="base"><!--设备基础版本 -->
+			<functions><!--版本上功能集合 -->
+				<function name="usmSnmpV3UserList" status="hidden"></function>
+				<function name="usmSnmpV3GroupList" status="hidden"></function>
+				<function name="usmSnmpV3ViewList" status="hidden"></function>
+				<function name="snmpV3Notify" status="hidden"></function>
+				<function name="oltQos" status="hidden"></function>
+				<function name="elecOnuComVlan" status="hidden"></function>
+				<function name="ponCutOver" status="hidden"></function>
+				<function name="oltMacListTab" status="hidden"></function>
+				<function name="sniQos" status="hidden"></function>
+				<function name="ponQosConfig" status="hidden"></function>
+				<function name="onuIgmp" status="hidden"></function>
+				<function name="qosConfig" status="hidden"></function>
+				<function name="igmpUni" status="hidden"></function>
+				<function name="oltDhcpRelay" status="hidden"></function>
+				<function name="bdAdminStatus" status="hidden"></function>
+				<function name="gebdAdminStatus" status="hidden"></function>
+				<function name="uniRateBak" status="hidden"></function>
+				<function name="deleteSlotPreConf" status="hidden"></function>
+				<function name="bussinessTemplate" status="hidden"></function>
+                <function name="uniPortVlan" status="hidden"></function>
+				<function name="IgmpConfig" status="hidden"></function>
+				<function name="aclList" status="hidden"></function>
+				<function name="sniAclConfig" status="hidden"></function>
+				<function name="ponAclConfig" status="hidden"></function>
+				<function name="ponPvidConfig" status="hidden"></function>
+				<function name="uniConfig" status="hidden"></function>
+				<function name="onuReplace" status="hidden"></function>
+				<function name="oltVlan" status="hidden"></function>
+				<function name="oltIgmpConfig" status="hidden"></function>
+				<function name="oltAdvancedConfig" status="hidden"></function>
+				<function name="oltDhcpConfig" status="hidden"></function>
+				<function name="oltPPPoEConfig" status="hidden"></function>
+				<function name="onuIgmpConfig" status="hidden"></function>
+				<function name="logicInterfaceConfig" status="hidden"></function>
+				<function name="gpon" status="hidden"></function>
+				<function name="masterAlterBDSynchro" status="hidden"></function>
+				<function name="onuOpticalAlarmBack" status="hidden"></function>
+				<function name="onuVoip" status="hidden"></function>
+				<function name="rogueOnuCheck" status="hidden"></function>
+				<function name="ponRogueSwitch" status="hidden"></function>
+				<function name="onuLaserSwitch" status="hidden"></function>
+				<function name="ofa" status="hidden"></function>
+				<function name="sniVlanEntry" status="hidden"></function>
+				<function name="ponVlanEntry" status="hidden"></function>
+				<function name="ccmts"></function>
+				<function name="onuUpgProfileAutoMode"></function>
+			</functions>
+		</version>
+		
+		<version name="PN8600-V1.6.9.5" baseVersion="base">
+			<functions>
+				<function name="sniAgingTime" status="hidden"></function>
+				<function name="ponProtected" status="hidden"></function>
+				<function name="onuAutoUpg" status="hidden"></function>
+				<function name="IgmpConfig" status="hidden"></function>
+				<function name="masterBDSwitch" status="hidden"></function>
+				<function name="sniPerfStatus" status="hidden"></function>
+				<function name="ponPerfStatus" status="hidden"></function>
+				<function name="onuPerfEnable" status="hidden"></function>
+				<function name="uniPerfEnable" status="hidden"></function>
+				<function name="onuSlaConfigBack" status="hidden"></function>
+				<function name="setOnuMacAgeTime" status="hidden"></function>
+				<function name="loopBackConfig" status="hidden"></function>
+				<function name="ipRouteConfig" status="hidden"></function>
+				<function name="batchConfig" status="hidden"></function>
+				<function name="uniVlanProfile" status="hidden"></function>
+				<function name="batchHistoryQuery" status="hidden"></function>
+				<function name="ponMacAddrMaxLearningNum" status="hidden"></function>
+				<function name="oltOpticalAlarm" status="hidden"></function>
+				<function name="ponOpticalAlarm" status="hidden"></function>
+				<function name="oltOnuOpticalAlarm" status="hidden"></function>
+				<function name="onuOpticalAlarm" status="hidden"></function>
+				<function name="geuaBDRestore" status="hidden"></function>
+				<function name="mpuaBDRestore" status="hidden"></function>
+				<function name="isolationgroup_view" status="hidden"></function>
+			</functions>
+		</version>
+		
+		<version name="PN8600-V1.6.9.16" baseVersion="PN8600-V1.6.9.5">
+			<functions>
+			</functions>
+		</version>
+		
+		<version name="PN8600-V1.6.9.17" baseVersion="PN8600-V1.6.9.5">
+			<functions>
+			</functions>
+		</version>
+		
+		<version name="PN8600-V1.7.0.0" baseVersion="base">
+			<functions>
+			    <function name="isolationgroup_view" status="hidden"></function>
+			    <function name="perfThreshold" status="hidden"></function>
+			    <function name="oltAlertMask" status="hidden"></function>
+			    <function name="sni24HourPerfStatus" status="hidden"></function>
+			    <function name="pon24HourPerfStatus" status="hidden"></function>
+			    <function name="onuSlaConfig" status="hidden"></function>
+			    <function name="onu24hourEnable" status="hidden"></function>
+			    <function name="uni24hourEnable" status="hidden"></function>
+			    <function name="vlanConfig" status="hidden"></function>
+			    <function name="sni15MinPerfStatus" status="hidden"></function>
+			    <function name="pon15MinPerfStatus" status="hidden"></function>
+			    <function name="onu15minEnable" status="hidden"></function>
+			    <function name="uni15minEnable" status="hidden"></function>
+			    <function name="uniMacAddrAgeTime" status="hidden"></function>
+			    <function name="ponMacLearningNumSet" status="hidden"></function>
+			    <function name="geuaTempDetectEnable" status="hidden"></function>
+			    <function name="mpuaTempDetectEnable" status="hidden"></function>
+			    <function name="epuaTempDetectEnable" status="hidden"></function>
+			    <function name="onuOpticalAlarm" status="hidden"></function>
+			    <function name="bdAdminStatus" status="show"></function>
+				<function name="gebdAdminStatus" status="show"></function>
+		    </functions>
+		</version>
+		
+		<version name="PN8600-V1.7.4.0" baseVersion="PN8600-V1.7.0.0">
+			<functions>
+	            <function name="oltOpticalAlarm" status="hidden"></function>
+	            <function name="oltOnuOpticalAlarm" status="hidden"></function>
+	            <function name="ponIsolationStatus" status="hidden"></function>
+	            <function name="isolationgroup_view" status="show"></function>
+	            <function name="sniIsolationStatus" status="hidden"></function>
+	            <function name="uniConfig" status="show"></function>
+			</functions>
+		</version>
+		
+		<version name="PN8600-V1.7.10.0" baseVersion="PN8600-V1.7.4.0">
+			<functions>
+			</functions>
+		</version>
+	    <version name="PN8600-V1.7.12.1" baseVersion="PN8600-V1.7.10.0">
+            <functions>
+                <function name="autoClearCm"></function>
+            </functions>
+        </version>
+		<version name="PN8600-V1.7.12.26" baseVersion="PN8600-V1.7.4.0">
+			<functions>
+			    <function name="ponPvidConfig" status="show"></function>
+			</functions>
+		</version>
+		
+		<version name="PN8600-V1.8.0.0" baseVersion="PN8600-V1.7.12.1">
+			<functions>
+				<function name="ponProtected" status="hidden"></function>
+	            <function name="ponSpeedMode" status="hidden"></function>
+	            <function name="baseLlid" status="hidden"></function>
+	            <function name="bdAdminStatus" status="show"></function>
+				<function name="gebdAdminStatus" status="show"></function>
+				<function name="isolationgroup_view" status="show"></function>
+				<function name="uniRate" status="hidden"></function>
+				<function name="uniRateBak" status="show"></function>
+				<function name="deleteSlotPreConf" status="show"></function>
+				<function name="onuOpticalAlarm" status="show"></function>
+				<function name="bussinessTemplate" status="show"></function>
+                <function name="uniVlanBindInfo" status="hidden"></function>
+				<function name="uniPortVlan" status="show"></function>
+				<function name="ponPvidConfig" status="show"></function>
+				<function name="uniConfig" status="show"></function>
+				<function name="oltVlan" status="show"></function>
+			</functions>
+		</version>
+		
+		<version name="PN8600-V1.8.0.1" baseVersion="PN8600-V1.8.0.0">
+			<functions>
+				<function name="onuReplace" status="show"></function>
+				<function name="oltIgmpConfig" status="show"></function>
+				<function name="onuIgmpConfig" status="show"></function>
+				<function name="logicInterfaceConfig" status="show"></function>
+				<function name="loopBackConfig" status="hidden"></function>
+			</functions>
+		</version>
+		
+		 <version name="PN8600-V1.9.0.0" baseVersion="PN8600-V1.8.0.1">
+			<functions>
+				 <function name="pvidPri"></function>
+			</functions>
+		</version>
+		
+		<version name="PN8600-V1.9.0.2" baseVersion="PN8600-V1.9.0.0">
+			<functions>
+				 <function name="gpon"></function>
+				  <function name="onuOpticalAlarm" status="hidden"></function>
+				 <function name="onuOpticalAlarmBack" status="show"></function>
+			</functions>
+		</version>
+		
+		<version name="PN8600-V1.8.0.5-F.GPON.4" baseVersion="PN8600-V1.9.0.2">
+			<functions>
+			</functions>
+		</version>
+		
+		<version name="PN8600-V1.9.0.16-F.voip.1" baseVersion="PN8600-V1.9.0.2">
+            <functions>
+                 <function name="onuVoip" status="show"></function>
+            </functions>
+        </version>
+		
+        <version name="PN8600-V1.9.0.21" baseVersion="PN8600-V1.9.0.2">
+            <functions>
+                <function name="cmDocsisMode"></function>
+            </functions>
+        </version>
+        
+        <version name="PN8600-V1.10.0.0" baseVersion="PN8600-V1.9.0.21">
+			<functions>
+				<function name="portVlanEntry" status="hidden"></function>
+				<function name="sniVlanEntry" status="show"></function>
+				<function name="ponVlanEntry" status="show"></function>
+				<function name="rogueOnuCheck" status="show"></function>
+				<function name="ponRogueSwitch" status="show"></function>
+				<function name="onuLaserSwitch" status="show"></function>
+				<function name="onuVoip" status="show"></function>
+				<function name="onuAuth">
+                	<index key="deviceVersion" value="V1.10" />
+            	</function>
+                <function name="onuWan">
+                    <index key="deviceVersion" value="V1.10" />
+                </function>
+                <function name="ccmts" status="disabled"></function>
+                <function name="onuUpgProfileAutoMode" status="hidden"></function>
+			</functions>
+		</version>
+		
+		<version name="PN8600-V1.10.0.2" baseVersion="PN8600-V1.10.0.0">
+			<functions>
+				<function name="oltAdvancedConfig" status="show"></function>
+				<function name="oltDhcpConfig" status="show"></function>
+				<function name="oltPPPoEConfig" status="show"></function>
+			</functions>
+		</version>
+
+		<version name="PN8600-V1.10.0.5" baseVersion="PN8600-V1.10.0.2">
+			<functions>
+				<function name="topsysoltuptime"  status="show">
+					<index key="deviceVersion" value="V1.10.0.5" />
+				</function>
+			</functions>
+		</version>
+	</versions>
+</root>

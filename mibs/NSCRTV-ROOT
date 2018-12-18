@@ -1,0 +1,55 @@
+
+NSCRTV-ROOT DEFINITIONS ::= BEGIN
+
+IMPORTS
+     enterprises
+          FROM RFC1155-SMI
+;
+
+nscrtvRoot  OBJECT IDENTIFIER ::= { enterprises 34808 }
+
+-- DESCRIPTION
+--     "nscrtvRoot定义全国广播电视标准化技术委员会MIB根节点。"
+
+nscrtvHFCemsTree  OBJECT IDENTIFIER  ::= { nscrtvRoot 1 }
+nscrtvEponEocTree  OBJECT IDENTIFIER  ::= { nscrtvRoot 2}
+-- DESCRIPTION
+--     "nscrtvEponEocTree定义EPON、EOC管理系统MIB根节点,"
+--     "所有EPON、EOC系统的MIB均应在该节点下定义。"
+
+nscrtvEponEocAlarmTrapTree  OBJECT IDENTIFIER  ::= { nscrtvRoot 8080}
+-- DESCRIPTION
+--     "私有的告警TRAP消息分支。"
+
+propertyIdent  OBJECT IDENTIFIER  ::= { nscrtvEponEocTree 1}
+--     DESCRIPTION   
+--     "11月07日新增：属性(Property)MIB的分支节点标识。"
+
+alarmsIdent   OBJECT IDENTIFIER ::= { nscrtvEponEocTree 2}
+
+--     DESCRIPTION
+--     "告警(Alarms)MIB的分支节点标识。"
+
+eponTree   OBJECT IDENTIFIER ::= { nscrtvEponEocTree 3}
+
+--     DESCRIPTION
+--     "EPON MIB的分支节点标识。"
+
+modEoCTree   OBJECT IDENTIFIER ::= { nscrtvEponEocTree 4}
+
+--     DESCRIPTION
+--     "调制EoC MIB的分支节点标识。"
+
+
+baseEocTree OBJECT IDENTIFIER  ::= { nscrtvEponEocTree 5}
+-- DESCRIPTION
+--     "基带EoC MIB的分支节点标识。"
+
+
+END
+
+
+--
+-- NSCRTV-ROOT.mib
+--
+

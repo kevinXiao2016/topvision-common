@@ -1,0 +1,107 @@
+NSCRTV-EPONEOC-ALARMS-MIB DEFINITIONS ::= BEGIN
+
+     IMPORTS
+          TRAP-TYPE
+               FROM RFC-1215
+          OBJECT-TYPE
+               FROM RFC-1212
+          DisplayString
+               FROM RFC1213-MIB  
+          alarmsIdent
+               FROM NSCRTV-ROOT
+     ;     
+
+     alarmLogNumberOfEntries OBJECT-TYPE
+          SYNTAX INTEGER
+          ACCESS read-only
+          STATUS mandatory
+          DESCRIPTION
+                    "告警记录表中的记录数量。"
+          ::= { alarmsIdent 1 }
+
+     alarmLogLastIndex OBJECT-TYPE
+          SYNTAX INTEGER
+          ACCESS read-only
+          STATUS mandatory
+          DESCRIPTION
+                    "最近一条告警记录的索引值。"
+          ::= { alarmsIdent 2 }
+
+     alarmLogTable OBJECT-TYPE
+          SYNTAX SEQUENCE OF AlarmLogEntry
+          ACCESS not-accessible
+          STATUS mandatory
+          DESCRIPTION
+                    "告警记录表，至少支持16条记录。每次在表中登记一条新的记录时，应答器应向设备管理器发送陷阱消息。"
+          ::= { alarmsIdent 3 }
+
+     alarmLogEntry OBJECT-TYPE
+          SYNTAX AlarmLogEntry
+          ACCESS not-accessible
+          STATUS mandatory
+          DESCRIPTION
+                    "告警记录表目。"
+          INDEX { alarmLogIndex }
+          ::= { alarmLogTable 1 }
+
+     AlarmLogEntry ::=
+          SEQUENCE
+          {
+               alarmLogIndex
+                    INTEGER,
+               alarmLogInformation
+                    OCTET STRING,   
+               alarmLogCLTIndex
+                    INTEGER,   
+               alarmLogCNUIndex
+                    INTEGER
+          }
+
+     alarmLogIndex OBJECT-TYPE
+          SYNTAX INTEGER (1..32767)
+          ACCESS read-only
+          STATUS mandatory
+          DESCRIPTION
+                    "索引唯一标识告警记录表中的一条记录，索引值从1开始每次增加新记录时加1，直到32767，下一条记录索引值重新从1开始。应答器可根据存储容量选择删除最早的那些记录，具体实现细节在此不做规定。"
+          ::= { alarmLogEntry 1 }
+
+     alarmLogInformation OBJECT-TYPE
+          SYNTAX OCTET STRING ( SIZE ( 17..255 ) )
+          ACCESS read-only
+          STATUS mandatory
+          DESCRIPTION
+               "告警记录信息，多字节串，定义如下：
+               字节 1～4: 告警发生时间(POSIX格式，最高有效字节在前)
+               字节 5: 告警类型(枚举，定义见后)
+               字节 6: 告警发生后commonNeStatus的值
+               字节 7～m: 告警参数的对象标识符(基本编码规则（ASN.1）)
+               字节 n～z: 告警参数值 (基本编码规则（ASN.1）)
+
+               告警枚举类型：
+               1 NOMINAL
+               2 HIHI
+               3 HI
+               4 LO
+               5 LOLO
+               6 Discrete Major         
+               7 Discrete Minor "
+		::= { alarmLogEntry 2 }   
+		
+		alarmLogCLTIndex OBJECT-TYPE
+          SYNTAX INTEGER (0..4)
+          ACCESS read-only
+          STATUS mandatory
+          DESCRIPTION
+                    "11月07日新增：告警信息头端索引，为0代表此告警描述的是主机框，1-4则描述对应的头端"
+          ::= { alarmLogEntry 3 }
+
+        alarmLogCNUIndex OBJECT-TYPE
+          SYNTAX INTEGER (0..128)
+          ACCESS read-only
+          STATUS mandatory
+          DESCRIPTION
+                    "11月07日新增：告警信息终端索引，为0代表此告警描述的是主机框或头端，1-128则描述对应的终端"
+          ::= { alarmLogEntry 4 }
+
+END
+

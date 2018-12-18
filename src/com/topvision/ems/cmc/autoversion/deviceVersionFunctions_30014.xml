@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--目的：为了对某一版本网管中，不同版本的设备进行统一管理。 可以根据设备的‘版本号’对该设备下的功能及子功能进行匹配展示，以便适应不同版本的设备上对同一功能的差异适配 -->
+<root deviceType="30014" deviceName="CC8800C-E（强集中）">
+    <versions><!--设备版本 -->
+        <version name="base"><!--设备基础版本 -->
+            <functions><!--版本上功能集合 -->
+                <function name="ccmts"></function>
+                <function name="alert"></function>
+                <function name="curPerf"></function>
+                <function name="baseInfoCfg"></function>
+                <function name="upChannel">
+                    <index key="modulationProfile"
+                        value="1,QPSK-Fair-Scdma;2,QAM16-Fair-Scdma;3,QAM64-Fair-Scdma;4,QAM256-Fair-Scdma;5,QPSK-Good-Scdma;6,QAM16-Good-Scdma;7,QAM64-Good-Scdma;8,QAM256-Good-Scdma;9,QAM64-Best-Scdma;10,QAM256-Best-Scdma;11,QPSK-Atdma;12,QAM16-Atdma;13,QAM64-Atdma;14,QAM256-Atdma;15,QAM64-LowLatency-Scdma;16,QAM256-LowLatency-Scdma;17,QAM32-Good-Scdma;18,QAM32-Atdma" />
+                    <index key="rangingBackoff" value="true" />
+                    <index key="txBackoff" value="true" />
+                    <index key="channelExtModeName" value="true" />
+                </function>
+                <function name="downChannel">
+                    <index key="channelInterleave" value="true" />
+                    <index key="annexMode" value="true" />
+                    <index key="docsIfDownChannelWidth" value="true" />
+                </function>
+                <function name="flap"></function>
+                <function name="clearOfflineCm"></function>
+                <function name="cm">
+                    <index key="reboot" value="true" />
+                </function>
+                <function name="resetCm"></function>
+                <function name="cpeInfo"></function>
+                <function name="clearCpe"></function>
+                <function name="staticIp"></function>
+                <function name="dhcpRelay"></function>
+                <function name="loadbalance"></function>
+                <function name="cmc8800ADocsis"></function>
+                <function name="cmc8800ASyslog" status="disabled"></function>
+                <function name="spectrum" status="disabled"></function>
+                <function name="spectrumII"></function>
+                <function name="realtimecpe"></function>
+            </functions>
+        </version>
+        <version name="PN8600-V1.7.12.26" baseVersion="base">
+            <functions>
+                <function name="ipqam"></function>
+            </functions>
+        </version>
+        <version name="PN8600-V1.7.12.28" baseVersion="PN8600-V1.7.12.26">
+            <functions>
+                <function name="replace8800A"></function>
+            </functions>
+        </version>
+        <version name="PN8600-V1.7.12.32" baseVersion="PN8600-V1.7.12.28">
+            <functions>
+                <function name="opticalReceiverRead"></function>
+            </functions>
+        </version>
+
+        <version name="PN8600-V1.8.0.0" baseVersion="PN8600-V1.7.12.28">
+            <functions>
+            </functions>
+        </version>
+        <version name="PN8600-V1.8.0.2" baseVersion="PN8600-V1.8.0.0">
+            <functions>
+                <function name="opticalReceiverRead"></function>
+            </functions>
+        </version>
+        
+        <version name="PN8600-V1.9.0.0" baseVersion="PN8600-V1.8.0.2">
+            <functions>
+                <function name="opticalReceiverNew"></function>
+                <function name="opticalReceiverRead" status="disabled"></function>
+                <function name="spectrumOptimize"></function>
+            </functions>
+        </version>
+
+        <version name="PN8600-V1.9.0.21" baseVersion="PN8600-V1.9.0.0">
+            <functions>
+                <function name="cmDocsisMode"></function>
+            </functions>
+        </version>
+        
+        
+        <version name="V1.9.0.0-F.DorManage.1" baseVersion="PN8600-V1.8.0.2">
+            <functions>
+                <function name="opticalReceiverNew"></function>
+                <function name="opticalReceiverRead" status="disabled"></function>
+            </functions>
+        </version>
+
+        <version name="V2.2.9.5" baseVersion="base">
+            <functions>
+                <function name="spectrumOptimize" status="disabled"></function>
+            </functions>
+        </version>
+
+        <version name="V2.2.9.6" baseVersion="V2.2.9.5">
+            <functions>
+            </functions>
+        </version>
+
+        <version name="V2.3.0.0" baseVersion="V2.2.9.6">
+            <functions>
+                <function name="spectrumOptimize"></function>
+            </functions>
+        </version>
+
+        <version name="V3.0.0.0" baseVersion="V2.3.0.0">
+            <functions>
+            </functions>
+        </version>
+
+        <version name="PN8600-V1.9.0.0-F.FFT.2" baseVersion="PN8600-V1.8.0.0">
+            <functions>
+                <function name="spectrumOptimize"></function>
+            </functions>
+        </version>
+        <version name="PN8600-V1.9.0.0-F.FFT.3" baseVersion="PN8600-V1.8.0.0">
+            <functions>
+                <function name="spectrumOptimize"></function>
+            </functions>
+        </version>
+        <version name="PN8600-V1.9.0.0-F.FFT.4" baseVersion="PN8600-V1.8.0.0">
+            <functions>
+                <function name="spectrumOptimize"></function>
+            </functions>
+        </version>
+        <version name="PN8600-V1.8.0.5-F.GPCC.1" baseVersion="PN8600-V1.9.0.0">
+            <functions>
+            </functions>
+        </version>
+        <version name="PN8600-V1.8.0.5-F.GPCC.2" baseVersion="PN8600-V1.9.0.0">
+            <functions>
+            </functions>
+        </version>
+        <version name="PN8600-V1.8.0.5-F.GPCC.3" baseVersion="PN8600-V1.9.0.0">
+            <functions>
+            </functions>
+        </version>
+        <version name="PN8600-V1.8.0.5-F.GPCC.4" baseVersion="PN8600-V1.9.0.0">
+            <functions>
+            </functions>
+        </version>
+        <version name="PN8600-V1.8.0.5-F.GPCC.5" baseVersion="PN8600-V1.9.0.0">
+            <functions>
+            </functions>
+        </version>
+
+        <version name="V2.2.9.5-F.fft.2" baseVersion="base">
+            <functions>
+                <function name="spectrumOptimize"></function>
+            </functions>
+        </version>
+        <version name="V2.2.9.5-F.fft.3" baseVersion="base">
+            <functions>
+                <function name="spectrumOptimize"></function>
+            </functions>
+        </version>
+        <version name="V2.2.9.5-F.fft.4" baseVersion="base">
+            <functions>
+                <function name="spectrumOptimize"></function>
+            </functions>
+        </version>
+
+        <version name="V2.2.9.6-F.GponUplink.1" baseVersion="V2.3.0.0">
+            <functions>
+            </functions>
+        </version>
+        <version name="V2.2.9.6-F.GponUplink.2" baseVersion="V2.3.0.0">
+            <functions>
+            </functions>
+        </version>
+        <version name="V2.2.9.6-F.GponUplink.3" baseVersion="V2.3.0.0">
+            <functions>
+            </functions>
+        </version>
+        <version name="V2.2.9.6-F.GponUplink.4" baseVersion="V2.3.0.0">
+            <functions>
+            </functions>
+        </version>
+        <version name="V2.2.9.6-F.GponUplink.5" baseVersion="V2.3.0.0">
+            <functions>
+            </functions>
+        </version>
+    </versions>
+</root>

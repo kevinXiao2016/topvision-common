@@ -1,0 +1,2865 @@
+NSCRTV-EPONEOC-MOD-EOC-MIB DEFINITIONS ::= BEGIN
+
+IMPORTS
+	enterprises
+         FROM RFC1155-SMI
+	DisplayString			
+		FROM RFC1213-MIB
+	TimeTicks, IpAddress, Counter64, OBJECT-TYPE, MODULE-IDENTITY,OBJECT-IDENTITY,NOTIFICATION-TYPE				
+		FROM SNMPv2-SMI			
+	DateAndTime, MacAddress, RowStatus
+		FROM SNMPv2-TC                
+	TruthValue, TimeInterval
+		FROM SNMPv2-TC
+    modEoCTree 
+        FROM NSCRTV-ROOT
+;
+
+modEoCCLTAdminGroup OBJECT IDENTIFIER ::= { modEoCTree 1 }  
+
+modEoCCLTDevInfoGroup OBJECT IDENTIFIER ::= { modEoCCLTAdminGroup 1 }
+
+modEoCCLTAdminLogicalID OBJECT-TYPE
+	SYNTAX OCTET STRING (SIZE (0..40))
+	MAX-ACCESS read-write
+	STATUS current
+	DESCRIPTION
+            "针对主机框"
+	::= { modEoCCLTDevInfoGroup 1 }
+
+modEoCCLTAdminTechProject OBJECT-TYPE
+	SYNTAX INTEGER {
+		moca(1),
+		homePlugBPL(2),
+		homePlugAV(3),
+		homePNA(4),
+		wiFi(5),
+		others(6)
+	}
+	MAX-ACCESS read-only
+	STATUS current
+	DESCRIPTION
+            "针对主机框"
+	::= { modEoCCLTDevInfoGroup 2 }
+
+modEoCCLTAdminManufactoryInfo OBJECT-TYPE
+	SYNTAX DisplayString (SIZE (0..255))
+	MAX-ACCESS read-only
+	STATUS current
+	DESCRIPTION
+            "针对主机框"
+	::= { modEoCCLTDevInfoGroup 3 }
+
+modEoCCLTAdminModelNumber OBJECT-TYPE
+	SYNTAX DisplayString (SIZE (0..255))
+	MAX-ACCESS read-only
+	STATUS current
+	DESCRIPTION
+		        "EoC设备的型号.
+		        针对主机框"
+	::= { modEoCCLTDevInfoGroup 4 }
+
+modEoCCLTAdminSerialNumber OBJECT-TYPE
+	SYNTAX DisplayString (SIZE (0..255))
+	MAX-ACCESS read-only
+	STATUS current
+	DESCRIPTION
+		        "EoC设备的序列号.
+		        针对主机框"
+	::= { modEoCCLTDevInfoGroup 5 }
+
+modEoCCLTAdminSoftwareVersion OBJECT-TYPE
+	SYNTAX DisplayString (SIZE (0..255))
+	MAX-ACCESS read-only
+	STATUS current
+	DESCRIPTION
+		        "EoC CLT设备的软件或固件的版本号。
+		        针对主机框"
+	::= { modEoCCLTDevInfoGroup 6 }
+
+modEoCCLTAdminHardwareVersion OBJECT-TYPE
+	SYNTAX DisplayString (SIZE (0..255))
+	MAX-ACCESS read-only
+	STATUS current
+	DESCRIPTION
+		        "EoC CLT 设备的硬件版本号。
+		        针对主机框"
+	::= { modEoCCLTDevInfoGroup 7 }
+
+modEoCCLTAdminVendorSpecialInfo OBJECT-TYPE
+	SYNTAX DisplayString (SIZE (0..255))
+	MAX-ACCESS read-only
+	STATUS current
+	DESCRIPTION
+		        "EoC CLT设备供应商的其它特殊指定信息。
+		        针对主机框"
+	::= { modEoCCLTDevInfoGroup 8 }
+
+-- -----------------------------------------------------------------
+-- The EoC CLT Device Network Attribution Group: 34808.2.4.1.2
+-- -----------------------------------------------------------------
+modEoCCLTNetworkAttrGroup OBJECT IDENTIFIER ::= { modEoCCLTAdminGroup 2 }
+
+modEoCCLTAdminMACAddress OBJECT-TYPE
+	SYNTAX MacAddress
+	MAX-ACCESS read-only
+	STATUS current
+	DESCRIPTION
+		        "EoC CLT的MAC地址。
+		        针对主机框"
+		::= { modEoCCLTNetworkAttrGroup 1 }
+
+modEoCCLTAdminIPMode OBJECT-TYPE
+	SYNTAX INTEGER {
+		static(0),
+		dynamic(1)
+	}
+	MAX-ACCESS read-write
+	STATUS current
+	DESCRIPTION
+		        "EoC CLT的IP分配方式。
+		         static(0)  - 静态设置IP地址.
+		         dynamic(1) - 动态分配的IP地址，例如：DHCP服务器.
+		         针对主机框"
+	::= { modEoCCLTNetworkAttrGroup 2 }
+
+modEoCCLTAdminIPAddress OBJECT-TYPE
+	SYNTAX IpAddress
+	MAX-ACCESS read-write
+	STATUS current
+	DESCRIPTION
+		        "EoC CLT的IP地址。
+		        针对主机框"
+	::= { modEoCCLTNetworkAttrGroup 3 }
+
+modEoCCLTAdminIPMask OBJECT-TYPE
+	SYNTAX IpAddress
+	MAX-ACCESS read-write
+	STATUS current
+	DESCRIPTION
+		        "EoC CLT的IP地址的子网掩码。
+		        针对主机框"
+	::= { modEoCCLTNetworkAttrGroup 4 }
+
+modEoCCLTAdminIPGateway OBJECT-TYPE
+	SYNTAX IpAddress
+	MAX-ACCESS read-write
+	STATUS current
+	DESCRIPTION
+		        "EoC CLT的缺省网关IP地址。
+		        针对主机框"
+	::= { modEoCCLTNetworkAttrGroup 5 }
+
+modEoCCLTAdminEMSIPAddress OBJECT-TYPE
+	SYNTAX IpAddress
+	MAX-ACCESS read-write
+	STATUS current
+	DESCRIPTION
+		        "网管服务器(EMS)IP地址。"
+	::= { modEoCCLTNetworkAttrGroup 6 }
+
+modEocCLTAminStatus OBJECT-TYPE
+	SYNTAX INTEGER {
+		NOACTIVE(0),
+		ACTIVE(1)
+	}
+	MAX-ACCESS read-write
+	STATUS current
+	DESCRIPTION
+	          "11月07日新增：配置信息实际提交"
+  ::= { modEoCCLTNetworkAttrGroup 7 }
+    
+modEoCCLTAdminEMSVLANID OBJECT-TYPE
+        SYNTAX INTEGER
+        MAX-ACCESS read-write
+        STATUS current
+        DESCRIPTION 
+            "2010.06.28新增：The VLAN ID of EMS server."
+        ::= { modEoCCLTNetworkAttrGroup 101 }
+  
+-- -----------------------------------------------------------------
+-- The EoC CLT Device STatus Group, OID: 34808.2.4.1.3
+-- -----------------------------------------------------------------
+modEoCCLTDevStatusGroup OBJECT IDENTIFIER ::= { modEoCCLTAdminGroup 3 }
+
+modEoCCLTAdminAlarmDetectionControl OBJECT-TYPE
+	SYNTAX INTEGER {
+		detectionDisabled(1),
+		detectionEnabled(2),
+		detectionEnabledAndRegenerate(3)
+	}
+	MAX-ACCESS read-write
+	STATUS current
+	DESCRIPTION
+		        "EoC CLT设备告警检测开关，用于控制EOC CLT设备模拟和离散属性表中的告
+             警检测，该值应保存在非易失性存储器中。          
+		         detectionDisabled(1) - 禁用EoC CLT设备的告警检测。
+		         detectionEnabled(2)  - 允许EoC CLT设备的告警检测。
+		         detectionEnabledAndRegenerate(3) - 清除EoC CLT设备的告警记录表
+             alarmLogTable和当前告警表 currentAlarmTable中的所有告警信息并
+             且允许告警检测。模拟属性表和离散属性表中的所有告警属性将恢复
+             到缺省的正常值，但仍处于告警状态的属性将不会恢复到缺省的正常值。
+             针对主机框"   
+	DEFVAL { 2 }
+	::= { modEoCCLTDevStatusGroup 1 }
+
+modEoCCLTAdminStatus OBJECT-TYPE
+	SYNTAX INTEGER
+	MAX-ACCESS read-only
+	STATUS current
+	DESCRIPTION
+		        "EoC CLT设备登记状态，采用位来表示
+		         Bit 0: EOC CLT设备是否有消息要发送,1:有消息待发,0:无消息发送.消息
+             发送完毕后需清0。          
+		         Bit 1: 1: 有严重告警产生, 0: 无严重告警。
+		         Bit 2: 1: 有非严重告警产生, 0: 无严重告警。
+		         其他位：保留。
+		         针对主机框"
+	::= { modEoCCLTDevStatusGroup 2 }
+
+modEoCCLTAdminInternalTemperature OBJECT-TYPE
+	SYNTAX INTEGER (-128..127)      
+	UNITS "C"
+	MAX-ACCESS read-only
+	STATUS current
+	DESCRIPTION
+		        "EoC CLT设备的机内温度，单位为摄氏度。
+		        针对主机框"
+	::= { modEoCCLTDevStatusGroup 3 }
+
+modEoCCLTAdminTamperStatus OBJECT-TYPE
+	SYNTAX INTEGER {
+		intact(1),
+		compromised(2)
+	}
+	MAX-ACCESS read-only
+	STATUS current
+	DESCRIPTION
+		        "EOC CLT设备的安全开关(如盖子是否打开)状态，此对象要求在离散属性表
+             中登记一个条目。
+		         intact(1) - EoC CLT设备正常
+		         compromised(2) - EoC CLT设备安全开关打开。
+		         针对主机框"
+	::= { modEoCCLTDevStatusGroup 4 }
+
+modEoCCLTAdminDateAndTime OBJECT-TYPE
+	SYNTAX DateAndTime
+	MAX-ACCESS read-write
+	STATUS current
+	DESCRIPTION
+		        "EOC CLT设备的当前时间。
+		         时间格式：年-月-日，时:分:秒，时区。
+		         例如: 2009-7-15, 13:20:12.3, +8:0
+		         对于本地时间，时区信息可以忽略，
+		         针对主机框"
+	::= { modEoCCLTDevStatusGroup 5 }
+
+modEoCCLTAdminReset OBJECT-TYPE
+	SYNTAX INTEGER { reset(1) }
+	MAX-ACCESS read-write
+	STATUS current
+	DESCRIPTION
+		        "复位EoC CLT设备：
+		         reset(1) - 复位EOC设备。
+		         针对主机框"
+	::= { modEoCCLTDevStatusGroup 6 }
+
+modEoCCLTAdminResetCause OBJECT-TYPE
+	SYNTAX INTEGER {
+		other(1),
+		powerup(2),
+		command(3),
+		watchdog(4),
+		craft(5)
+	}
+	MAX-ACCESS read-only
+	STATUS current
+	DESCRIPTION
+		        "EoC CLT设备最近一次复位的原因:
+		         other(1)    - 其他原因,
+		         powerup(2)  - 上电复位,
+		         command(3)  - 软件命令复位,
+		         watchdog(4) - 看门狗复位,
+		         craft(5)    - EoC CLT设备本地接口复位.
+		         针对主机框"
+	::= { modEoCCLTDevStatusGroup 7 }
+
+modEoCCLTAdminConfigurationSaving OBJECT-TYPE
+	SYNTAX INTEGER { save(1) }
+	MAX-ACCESS read-write
+	STATUS current
+	DESCRIPTION
+		        "指示EoC CLT设备保存当前配置至非易失性存储器。
+		        针对主机框"
+	::= { modEoCCLTDevStatusGroup 8 }
+
+modEoCCLTAdminConfigurationResult OBJECT-TYPE
+	SYNTAX INTEGER {
+		success(0),
+		running(1),
+		failed(2)
+	}
+	MAX-ACCESS read-only
+	STATUS current
+	DESCRIPTION
+		        "保存EoC CLT设备当前配置的结果:
+		         successful(0) - 保存当前配成功,
+		         running(1)    - 正在保存当前配置,
+		         failed(2)     - 保存当前配置失败.
+		         针对主机框"
+	::= { modEoCCLTDevStatusGroup 9 }
+
+modEoCCLTAdminCPULoad OBJECT-TYPE
+	SYNTAX INTEGER
+	MAX-ACCESS read-only
+	STATUS current
+	DESCRIPTION
+		        "指示EoC设备CPU负载"
+	::= { modEoCCLTDevStatusGroup 100 }
+
+modEoCCLTAdminRAMLoad OBJECT-TYPE
+	SYNTAX INTEGER
+	MAX-ACCESS read-only
+	STATUS current
+	DESCRIPTION
+		        "指示EoC设备内存负载"
+	::= { modEoCCLTDevStatusGroup 101 }
+
+modEoCCLTAdminUPLinkRate OBJECT-TYPE
+	SYNTAX INTEGER
+	MAX-ACCESS read-only
+	STATUS current
+	DESCRIPTION
+		        "指示EoC CLT设备上行端口速率"
+	::= { modEoCCLTDevStatusGroup 102 }
+
+modEoCCLTAdminDownLinkRate OBJECT-TYPE
+	SYNTAX INTEGER
+	MAX-ACCESS read-only
+	STATUS current
+	DESCRIPTION
+		        "指示EoC CLT设备下行端口速率"
+	::= { modEoCCLTDevStatusGroup 103 }
+
+-- -----------------------------------------------------------------
+-- The EoC CLT Device SNMP Setting Group, OID: 34808.2.4.1.4
+-- -----------------------------------------------------------------
+modEoCCLTSNMPSettingGroup OBJECT IDENTIFIER ::= { modEoCCLTAdminGroup 4 }
+
+modEoCCLTAdminVarBindings OBJECT-TYPE
+	SYNTAX INTEGER
+	MAX-ACCESS read-write
+	STATUS current
+	DESCRIPTION
+		        "能被EoC CLT设备接收的SNMP消息变量绑定表项的最大数目。
+		         值为0表示对绑定最大数目没有限制。
+		         针对主机框"
+	::= { modEoCCLTSNMPSettingGroup 1 }
+
+modEoCCLTAdminSNMPVersion OBJECT-TYPE
+	SYNTAX INTEGER {
+		snmpv1(0),
+		snmpv2c(1)
+	}
+	MAX-ACCESS read-only
+	STATUS current
+	DESCRIPTION
+		        "SNMP版本号:
+		         snmpv1(0)  - SNMPv1
+		         snmpv2c(1) - SNMPv2c
+		         针对主机框"
+	::= { modEoCCLTSNMPSettingGroup 2 }
+
+modEoCCLTAdminSNMPCommunity OBJECT-TYPE
+	SYNTAX OCTET STRING (SIZE(0..7))
+	MAX-ACCESS read-write
+	STATUS current
+	DESCRIPTION
+		        "SNMP共同体串，为8位字符串。
+		        针对主机框"
+	::= { modEoCCLTSNMPSettingGroup 3 }
+
+-- -----------------------------------------------------------------
+-- The EoC CLT Device Others Group, OID: 34808.2.4.1.5
+-- -----------------------------------------------------------------
+modEoCCLTOtherAdminGroup OBJECT IDENTIFIER ::= { modEoCCLTAdminGroup 5 }
+
+modEoCCLTAdminLinkTopoChange OBJECT-TYPE
+	SYNTAX INTEGER {
+		no-change(0),
+		change(1)
+	}
+	MAX-ACCESS read-only
+	STATUS current
+	DESCRIPTION
+		        "EoC CLT设备信道拓扑图变化识别信息。
+		         no-change(0) - 没有变化,
+             change(1)    - 有变化。当CLT所连接的CNU有上线或是离线时，其信道拓
+             扑图发生改变，其值变为1.直到EMS服务器对其处理后，其
+             值才恢复为0；
+					   此对象值由0到1的变化，往往伴随着一个设备上线离线的
+             陷阱产生.
+             针对主机框"
+	DEFVAL { 0 }
+	::= { modEoCCLTOtherAdminGroup 1 }
+
+modEoCCLTAdminAppropriativeOID OBJECT-TYPE
+	SYNTAX OBJECT IDENTIFIER
+	MAX-ACCESS read-write
+	STATUS current
+	DESCRIPTION
+		        "此对象为一个OID指针，用于指向被管设备专用MIB,例如：企业专用MIB.
+		        针对主机框，需要加以详细描述"
+	::= { modEoCCLTOtherAdminGroup 2 }
+
+modEoCCLTTelnetTimeout OBJECT-TYPE
+	SYNTAX INTEGER
+	MAX-ACCESS read-write
+	STATUS current
+	DESCRIPTION
+		        "telnet 服务器超时时间设置"
+	::= { modEoCCLTOtherAdminGroup 3 }
+
+modEoCWorkMode OBJECT-TYPE
+	SYNTAX INTEGER
+	MAX-ACCESS read-write
+	STATUS current
+	DESCRIPTION
+		        "更改系统工作模式"
+	::= { modEoCCLTOtherAdminGroup 4 }
+
+modEoCWorkToneStartFreq OBJECT-TYPE
+	SYNTAX INTEGER
+	MAX-ACCESS read-write
+	STATUS current
+	DESCRIPTION
+		        "更改系统工作频段start"
+	::= { modEoCCLTOtherAdminGroup 5 }
+
+modEoCWorkToneStopFreq OBJECT-TYPE
+	SYNTAX INTEGER
+	MAX-ACCESS read-write
+	STATUS current
+	DESCRIPTION
+		        "更改系统工作频段stop"
+	::= { modEoCCLTOtherAdminGroup 6 }
+	
+--*
+--* EoC CLT 射频信道管理组
+--*
+modEoCCLTRFGroup 	OBJECT IDENTIFIER ::= { modEoCTree 2 }
+
+modEoCCLTRFTable 	OBJECT-TYPE
+		SYNTAX 			SEQUENCE OF ModEoCCLTRFEntry
+		MAX-ACCESS 		not-accessible
+		STATUS 			mandatory
+		DESCRIPTION		
+		          "CLT射频信道管理表单。"
+		::= { modEoCCLTRFGroup 1 }
+
+modEoCCLTRFEntry 	OBJECT-TYPE
+		SYNTAX 			ModEoCCLTRFEntry
+		MAX-ACCESS 		not-accessible
+		STATUS 			mandatory
+		DESCRIPTION		
+		          "CLT射频信道管理表目。"
+		INDEX { modEoCCLTRFIndex }
+		::= { modEoCCLTRFTable 1 }
+
+ModEoCCLTRFEntry ::=
+			SEQUENCE { 
+				modEoCCLTRFIndex				
+				INTEGER,
+				modEoCCLTRFLinkMaximum			
+				INTEGER,
+				modEoCCLTRFCLTOutputLevel		
+				INTEGER,
+				modEoCCLTRFDownstreamStartFreq	
+				INTEGER,
+				modEoCCLTRFDownstreamStopFreq	
+				INTEGER,
+				modEoCCLTRFUpstreamStartFreq	
+				INTEGER,
+				modEoCCLTRFUpstreamStopFreq		
+				INTEGER
+			 }
+
+modEoCCLTRFIndex		OBJECT-TYPE
+		SYNTAX 			INTEGER
+		MAX-ACCESS	 	read-only
+		STATUS 			mandatory
+		DESCRIPTION		
+		          "CLT的序号索引
+		           针对头端，1-2-3-4"
+		::= { modEoCCLTRFEntry 1 }
+
+modEoCCLTRFLinkMaximum 	OBJECT-TYPE
+		SYNTAX 			INTEGER
+		MAX-ACCESS 		read-only
+		STATUS 			mandatory
+		DESCRIPTION		
+		          "CLT射频信道最大链路数。"
+		::= { modEoCCLTRFEntry 2 }
+
+modEoCCLTRFCLTOutputLevel		OBJECT-TYPE
+		SYNTAX 			INTEGER
+		MAX-ACCESS 		read-write
+		STATUS 			optional
+		DESCRIPTION		
+		          "CLT射频输出功率电平，单位为dBuV。。"
+		::= { modEoCCLTRFEntry 3 }
+
+modEoCCLTRFDownstreamStartFreq	OBJECT-TYPE
+		SYNTAX 			INTEGER
+		MAX-ACCESS 		read-write
+		STATUS 			mandatory
+		DESCRIPTION		
+		          "CLT射频下行信道起始频率，单位为Hz。"
+		::= { modEoCCLTRFEntry 4 }
+
+modEoCCLTRFDownstreamStopFreq 	OBJECT-TYPE
+		SYNTAX 			INTEGER
+		MAX-ACCESS 		read-write
+		STATUS 			mandatory
+		DESCRIPTION		
+		          "CLT射频下行信道终止频率，单位为Hz。"
+		::= { modEoCCLTRFEntry 5 }
+
+modEoCCLTRFUpstreamStartFreq OBJECT-TYPE
+		SYNTAX		 	INTEGER 
+		MAX-ACCESS 		read-write
+		STATUS 			mandatory
+		DESCRIPTION		
+		          "CLT射频上行信道起始频率，单位为Hz。"
+		::= { modEoCCLTRFEntry 6 }
+
+modEoCCLTRFUpstreamStopFreq OBJECT-TYPE
+		SYNTAX 			INTEGER
+		MAX-ACCESS 		read-write
+		STATUS 			mandatory
+		DESCRIPTION		
+		          "CLT射频上行信道终止频率，单位为Hz。"
+		::= { modEoCCLTRFEntry 7 }
+
+--*
+--* EoC CLT MAC层管理组
+--*
+
+modEoCCLTMACGroup 		OBJECT IDENTIFIER ::= { modEoCTree 3 }
+
+modEoCCLTMACVlanTable	OBJECT-TYPE 		    
+	SYNTAX			SEQUENCE  OF  ModEoCCLTMACVlanEntry  		    
+	MAX-ACCESS		not-accessible 		    
+	STATUS			mandatory  		    
+	DESCRIPTION		
+						"CLT MAC层Vlan表单" 		    
+	::=  { modEoCCLTMACGroup 1  } 
+
+modEoCCLTMACVlanEntry	OBJECT-TYPE 		    
+	SYNTAX			ModEoCCLTMACVlanEntry
+	MAX-ACCESS		not-accessible 		    
+	STATUS			mandatory  		    
+	DESCRIPTION		
+						"CLT MAC层Vlan表目" 		    
+	INDEX 	{ modEoCCLTMACVlanIndex  }
+    ::=  {  modEoCCLTMACVlanTable 1  }
+
+ModEoCCLTMACVlanEntry::=  SEQUENCE { 		    
+	modEoCCLTMACVlanIndex    INTEGER, 		    
+	modEoCCLTMACVlanEN 		 TruthValue, 		    
+	modEoCCLTMACAdminVlanID  INTEGER
+} 
+modEoCCLTMACVlanIndex	OBJECT-TYPE 		    
+	SYNTAX			INTEGER  		    
+	MAX-ACCESS		read-only 		    
+	STATUS			mandatory  		    
+	DESCRIPTION		
+						"CLT序号索引
+						针对头端 1-2-3-4"             
+::=  {  modEoCCLTMACVlanEntry 1  } 
+
+modEoCCLTMACVlanEN	OBJECT-TYPE 		    
+	SYNTAX			TruthValue  		    
+	MAX-ACCESS		read-write 		    
+	STATUS			mandatory  		    
+	DESCRIPTION		
+						"CLT的Vlan使能，“1”表示启用，“0”表示不启用" 		    
+	::=  {  modEoCCLTMACVlanEntry  2  } 
+
+modEoCCLTMACAdminVlanID	OBJECT-TYPE
+		SYNTAX			INTEGER	  ( 0..4095 )
+    MAX-ACCESS		read-write
+		STATUS			mandatory
+		DESCRIPTION		
+							"CLT管理VLAN ID号"
+		::={  modEoCCLTMACVlanEntry 3  }
+
+modEoCCLTMACBroadcastTable	OBJECT-TYPE 		    
+	SYNTAX			SEQUENCE  OF  ModEoCCLTMACBroadcastEntry  		    
+	MAX-ACCESS		not-accessible 		    
+	STATUS			mandatory  		    
+	DESCRIPTION		
+						"CLT MAC层广播风暴管理表单" 		    
+	::=  {  modEoCCLTMACGroup 2  } 
+
+modEoCCLTMACBroadcastEntry	OBJECT-TYPE 		    
+	SYNTAX			ModEoCCLTMACBroadcastEntry 		    
+	MAX-ACCESS		not-accessible 		    
+	STATUS			mandatory   		    
+	DESCRIPTION		
+						"CLT MAC层广播风暴管理表目" 		    
+	INDEX    {  modEoCCLTMACBroadcastIndex  }
+  ::=  {  modEoCCLTMACBroadcastTable 1  }
+
+ModEoCCLTMACBroadcastEntry::=  SEQUENCE { 		    
+	modEoCCLTMACBroadcastIndex			
+	INTEGER, 		    
+	modEoCCLTMACBroadcastRestrictionEN	
+	TruthValue, 		    
+	modEoCCLTMACBroadcastRestriction 	
+	INTEGER,
+	modEoCCLTMACUnknowRestrictionEN		
+	TruthValue,
+	modEoCCLTMACUnknowRestriction		
+	INTEGER
+} 
+modEoCCLTMACBroadcastIndex	OBJECT-TYPE 		    
+	SYNTAX			INTEGER  		    
+	MAX-ACCESS		read-only 		    
+	STATUS			mandatory  		    
+	DESCRIPTION		
+						"CLT 的序号索引
+						针对头端 1-2-3-4" 		    
+	::=  {  modEoCCLTMACBroadcastEntry 1  } 
+
+modEoCCLTMACBroadcastRestrictionEN	OBJECT-TYPE 		    
+	SYNTAX			TruthValue  		    
+	MAX-ACCESS		read-write 		    
+	STATUS			mandatory  		    
+	DESCRIPTION		
+						"CLT 广播包抑制使能。“1”表示处理，“0”表示不处理" 		    
+	::=  {  modEoCCLTMACBroadcastEntry 2  } 
+
+modEoCCLTMACBroadcastRestriction		OBJECT-TYPE 		    
+	SYNTAX			INTEGER 
+	MAX-ACCESS		read-write 		    
+	STATUS			mandatory  		    
+	DESCRIPTION		
+						"CLT 广播包抑制值，即允许通过的广播包数量"
+  ::=  {  modEoCCLTMACBroadcastEntry 3  } 
+        
+modEoCCLTMACUnknowRestrictionEN		OBJECT-TYPE 		    
+	SYNTAX			TruthValue  		    
+	MAX-ACCESS		read-write 		    
+	STATUS			mandatory  		    
+	DESCRIPTION		
+						"CLT 未知包抑制使能。“1”表示处理，“0”表示不处理" 		    
+	::=  {  modEoCCLTMACBroadcastEntry 4  } 
+
+modEoCCLTMACUnknowRestriction		OBJECT-TYPE 		   
+ SYNTAX			INTEGER 
+ MAX-ACCESS		read-write 		    
+ STATUS			mandatory  		    
+ DESCRIPTION		
+ 						"CLT 未知包抑制值，即允许通过的未知包数量"
+ ::=  {  modEoCCLTMACBroadcastEntry 5  } 
+        
+modEoCCLTMACCNUIsolationTable		OBJECT-TYPE 		    
+	SYNTAX			SEQUENCE  OF  ModEoCCLTMACCNUIsolationEntry  		    
+	MAX-ACCESS		not-accessible 		    
+	STATUS			mandatory  		    
+	DESCRIPTION		
+						"CLT MAC层CNU隔离管理表单" 		    
+	::=  {  modEoCCLTMACGroup 3  } 
+
+modEoCCLTMACCNUIsolationEntry		OBJECT-TYPE 		    
+	SYNTAX			ModEoCCLTMACCNUIsolationEntry
+	MAX-ACCESS		not-accessible 		    
+	STATUS			mandatory  		    
+	DESCRIPTION		
+						"CLT MAC层CNU隔离管理表目" 		    
+	INDEX    {  modEoCCLTMACCNUIsolationIndex  }
+	::=  {  modEoCCLTMACCNUIsolationTable 1  }
+
+ModEoCCLTMACCNUIsolationEntry::=  SEQUENCE { 		   
+	modEoCCLTMACCNUIsolationIndex		INTEGER, 		    
+	modEoCCLTMACCNUIsolationEN		    TruthValue
+} 
+
+modEoCCLTMACCNUIsolationIndex	OBJECT-TYPE 		    
+	SYNTAX			INTEGER  		    
+	MAX-ACCESS		read-only 		    
+	STATUS			mandatory  		    
+	DESCRIPTION		
+						"CLT的序号索引
+						针对头端 1-2-3-4" 		    
+	::=  {  modEoCCLTMACCNUIsolationEntry 1  } 
+
+modEoCCLTMACCNUIsolationEN	OBJECT-TYPE 		    
+	SYNTAX			TruthValue  		    
+	MAX-ACCESS		read-write 		    
+	STATUS			mandatory  		    
+	DESCRIPTION		
+        		"CLT MAC层CNU隔离管理开关。“1”表示隔离，“0”表示不隔离" 		    
+  ::=  {  modEoCCLTMACCNUIsolationEntry  2  } 
+        
+modEoCOnlineCLTTable		OBJECT-TYPE 		    
+	SYNTAX				SEQUENCE  OF  ModEoCOnlineCLTEntry  		    
+	MAX-ACCESS			not-accessible 		    
+	STATUS				mandatory  		    
+	DESCRIPTION			
+						"在线CLT信息表单" 		
+	::=  {  modEoCCLTMACGroup 4  } 
+
+modEoCOnlineCLTEntry		OBJECT-TYPE 		    
+	SYNTAX				ModEoCOnlineCLTEntry
+	MAX-ACCESS			not-accessible 		    
+	STATUS				mandatory   		    
+	DESCRIPTION			
+						"在线CLT信息表目"
+	INDEX	{  modEoCOnlineCLTIndex  } 		    
+	::=  {  modEoCOnlineCLTTable 1  }
+
+ModEoCOnlineCLTEntry::=  SEQUENCE { 		   
+    modEoCOnlineCLTIndex					
+    INTEGER, 		    
+    modEoCOnlineCLTMACAddress				
+    MacAddress, 		    
+    modEoCOnlineCLTModelNumber				
+    DisplayString,
+		modEoCOnlineCLTSoftwareVersion			
+		DisplayString,
+		modEoCOnlineCLTReset					
+		TruthValue,
+		modEoCOnlineCLTUpLinkBroadcastFrameSendIntervalBeforeAck	
+		TimeInterval,
+		modEoCOnlineCLTUpLinkBroadcastFrameSendIntervalAfterAck	
+		TimeInterval,
+		modEoCOnlineCLTUpLinkDeviceMACAddress	
+		MacAddress,
+		modEoCOnlineCLTUpLinkDevicePortNumber	
+		INTEGER,
+		modEoCOnlineCLTConfigurationSaving		
+		TruthValue,
+		modEoCOnlineCLTConfigurationResult		
+		TruthValue
+} 
+modEoCOnlineCLTIndex	OBJECT-TYPE 		  
+ SYNTAX			INTEGER  		   
+ MAX-ACCESS		read-only 		   
+ STATUS			mandatory  		   
+ DESCRIPTION		
+ 						"在线CLT序号索引
+ 						针对头端 1-2-3-4" 		   
+ ::=  {  modEoCOnlineCLTEntry 1  } 
+ 
+modEoCOnlineCLTMACAddress	OBJECT-TYPE 		   
+	SYNTAX				MacAddress  		   
+	MAX-ACCESS			read-only 		   
+	STATUS				mandatory  		   
+	DESCRIPTION			
+						"在线CLT的MAC地址
+						针对头端，要加以详细描述" 		   
+	::=  {  modEoCOnlineCLTEntry 2  } 
+
+modEoCOnlineCLTModelNumber	OBJECT-TYPE
+		SYNTAX				DisplayString
+    MAX-ACCESS			read-only
+		STATUS				mandatory
+		DESCRIPTION			
+							"在线CLT的型号"
+		::={  modEoCOnlineCLTEntry 3  }
+
+modEoCOnlineCLTSoftwareVersion	OBJECT-TYPE
+		SYNTAX				DisplayString
+    MAX-ACCESS			read-only
+		STATUS				mandatory
+		DESCRIPTION			
+							"在线CLT的程序版本号"
+		::={  modEoCOnlineCLTEntry 4  }
+
+modEoCOnlineCLTReset		OBJECT-TYPE
+		SYNTAX				TruthValue
+    MAX-ACCESS			read-write
+		STATUS				mandatory
+		DESCRIPTION			
+							"写入'1'复位在线局端设备，写入其它值不起作用。读此
+								对象时返回值'1'，对设备无影响。"
+		::={  modEoCOnlineCLTEntry 5  }
+
+modEoCOnlineCLTUpLinkBroadcastFrameSendIntervalBeforeAck	OBJECT-TYPE
+		SYNTAX				INTEGER
+    MAX-ACCESS			read-write
+		STATUS				optional
+		DESCRIPTION			
+							"确认前向上联ONU发送广播帧间隔，单位为“秒”。 间隔值建议为1分
+								钟。"
+		::={  modEoCOnlineCLTEntry 6  }
+
+modEoCOnlineCLTUpLinkBroadcastFrameSendIntervalAfterAck		OBJECT-TYPE
+		SYNTAX				INTEGER
+    MAX-ACCESS			read-write
+		STATUS				optional
+		DESCRIPTION			
+							"确认后向上联ONU发送广播帧间隔, 单位为秒“秒”。间隔值建议为60
+								分钟。"
+		::={  modEoCOnlineCLTEntry 7  }
+
+modEoCOnlineCLTUpLinkDeviceMACAddress	OBJECT-TYPE 		
+	SYNTAX					MacAddress  		
+	MAX-ACCESS				read-only 		
+	STATUS					optional  		
+	DESCRIPTION				
+						"在线CLT上联ONU的MAC地址" 		
+	::=  {  modEoCOnlineCLTEntry 8  } 
+	
+modEoCOnlineCLTUpLinkDevicePortNumber	OBJECT-TYPE 		
+		SYNTAX					INTEGER 
+		MAX-ACCESS				read-only 		
+		STATUS					optional  		
+		DESCRIPTION				
+							"在线CLT上联ONU端口号" 		
+		::=  {  modEoCOnlineCLTEntry 9  } 
+modEoCOnlineCLTConfigurationSaving		OBJECT-TYPE
+		SYNTAX					TruthValue
+    MAX-ACCESS				read-write
+		STATUS					mandatory
+		DESCRIPTION				
+						"写入“1”将当前的配置存入非易失性存储器中，写入其它值不起作用。读此对象时返回值“1”，对设备无影响。此操作建议作为每次变更配置后的必须操作。"
+		::={  modEoCOnlineCLTEntry 10 }
+
+modEoCOnlineCLTConfigurationResult		OBJECT-TYPE
+		SYNTAX					TruthValue
+    MAX-ACCESS				read-only
+		STATUS					mandatory
+		DESCRIPTION				
+						"写入当前的配置存入非易失性存储器中的操作结果：“1”表示操作成功，“2”表示操作失败。"
+		::={  modEoCOnlineCLTEntry 11  }
+
+-- =================================================================
+-- The EoC Software Upgrade Group: 34808.2.4.4
+-- =================================================================
+modEoCSoftwareUpgradeGroup OBJECT IDENTIFIER ::= { modEoCTree 4 }
+
+modEoCSoftwaretUpgradeServerIP OBJECT-TYPE
+	SYNTAX IpAddress
+	MAX-ACCESS read-write
+	STATUS current
+	DESCRIPTION
+						"软件升级服务器IP地址，例如:FTP或TFTP服务器IP地址。"
+	::= { modEoCSoftwareUpgradeGroup 1 }
+
+modEoCSoftwareUpgradeServerPort OBJECT-TYPE
+	SYNTAX INTEGER (0..65535)
+	MAX-ACCESS read-write
+	STATUS current
+	DESCRIPTION
+						"软件升级服务器IP端口号."
+	::= { modEoCSoftwareUpgradeGroup 2 }
+
+modEoCSoftwareUpgradeLogin OBJECT-TYPE
+	SYNTAX DisplayString (SIZE (1..32))
+	MAX-ACCESS read-write
+	STATUS current
+	DESCRIPTION
+						"软件升级服务器的用户名."
+	::= { modEoCSoftwareUpgradeGroup 3 }
+
+modEoCSoftwareUpgradePassWord OBJECT-TYPE
+	SYNTAX DisplayString (SIZE (1..16))
+	MAX-ACCESS read-write
+	STATUS current
+	DESCRIPTION
+						"软件升级服务器用户密码."
+	::= { modEoCSoftwareUpgradeGroup 4 }
+
+modEoCSoftwareUpgradeStatus OBJECT-TYPE
+	SYNTAX INTEGER {
+		NOACTIVE(0),
+		ACTIVE(1)
+	}
+	MAX-ACCESS read-write
+	STATUS current
+	DESCRIPTION
+						"11月07日新增：配置信息实际提交"
+  ::= { modEoCSoftwareUpgradeGroup 6 }
+
+modEoCSoftwareUpgradeTable OBJECT-TYPE
+	SYNTAX SEQUENCE OF ModEoCSoftwareUpgradeEntry
+	MAX-ACCESS not-accessible
+	STATUS current
+	DESCRIPTION
+						"软件升级表单."
+	::= { modEoCSoftwareUpgradeGroup 5 }
+
+modEoCSoftwareUpgradeEntry OBJECT-TYPE
+	SYNTAX ModEoCSoftwareUpgradeEntry
+	MAX-ACCESS not-accessible
+	STATUS current
+	DESCRIPTION
+						"软件升级表目."
+	INDEX { modEoCSoftwareUpgradeMasterIndex, modEoCSoftwareUpgradeCNUIndex }
+	::= { modEoCSoftwareUpgradeTable 1 }
+
+ModEoCSoftwareUpgradeEntry ::= SEQUENCE { 
+	modEoCSoftwareUpgradeMasterIndex 
+	INTEGER,
+	modEoCSoftwareUpgradeCNUIndex 
+	INTEGER,
+	modEoCSoftwareUpgradeMACAddress 
+	MacAddress,
+	modEoCSoftwareUpgradeDevType 
+	INTEGER,
+	modEoCSoftwareUpgradeFileName 
+	OCTET STRING,
+	modEoCSoftwareUpgradeProceed 
+	INTEGER,
+	modEoCSoftwareUpgradeResult 
+	INTEGER
+	}
+
+modEoCSoftwareUpgradeMasterIndex OBJECT-TYPE
+	SYNTAX INTEGER (0..255)
+	MAX-ACCESS read-only
+	STATUS current
+	DESCRIPTION
+						"EoC CLT的序号索引，或CNU所属CLT的序号索引。"
+	::= { modEoCSoftwareUpgradeEntry 1 }
+
+modEoCSoftwareUpgradeCNUIndex OBJECT-TYPE
+	SYNTAX INTEGER (0..65535)
+	MAX-ACCESS read-only
+	STATUS current
+	DESCRIPTION
+						"CNU的序号索引，若只为CLT升级，则取值为0."
+	::= { modEoCSoftwareUpgradeEntry 2 }
+
+modEoCSoftwareUpgradeMACAddress OBJECT-TYPE
+	SYNTAX MacAddress
+	MAX-ACCESS read-write
+	STATUS current
+	DESCRIPTION
+						"待软件升级EoC CLT或CNU设备的MAC地址.
+						要加以详细描述"
+	::= { modEoCSoftwareUpgradeEntry 3 }
+
+modEoCSoftwareUpgradeDevType OBJECT-TYPE
+	SYNTAX INTEGER {
+		clt(1),
+		cnu(2),
+		other(3)
+	}
+	MAX-ACCESS read-write
+	STATUS current
+	DESCRIPTION
+						"待软件升级设备的类型，MASTER或者CNU:
+		 					clt(1)   - CLT,
+		 					cnu(2)   - CNU,
+		 					other(3) - 其他设备例如：Gateway或Switch."
+	::= { modEoCSoftwareUpgradeEntry 4 }
+
+modEoCSoftwareUpgradeFileName OBJECT-TYPE
+	SYNTAX OCTET STRING (SIZE (1..255))
+	MAX-ACCESS read-write
+	STATUS current
+	DESCRIPTION
+						"从软件升级服务器上下载的固件文件名。"
+	::= { modEoCSoftwareUpgradeEntry 5 }
+
+modEoCSoftwareUpgradeProceed OBJECT-TYPE
+	SYNTAX INTEGER	{
+		download(1),
+		upgrade(2),
+		backup(201),
+		restore(202)
+	}
+	MAX-ACCESS read-write
+	STATUS current
+	DESCRIPTION
+						"设备软件升级操作：
+						 download(1) - 从软件升级服务器上下载固件到EoC CLT设备.
+						 upgrade(2)  - 升级EoC CLT或CNU设备固件.                                        .
+						 backup(201) - 备份CBAT的配置文件.
+						 restore(202)- 导入CBAT的配置文件."
+	::= { modEoCSoftwareUpgradeEntry 6 }
+
+		
+modEoCSoftwareUpgradeResult OBJECT-TYPE
+	SYNTAX INTEGER {
+		none(0),
+		downloading(1),
+		downloadfailed(2),
+		downloadsuccess(3),
+		upgrading(4),
+		upgradefailed(5),
+		upgradesuccess(6), 
+		downloading2(201),
+		downloadfailed2(202),
+		invalidfile(203),
+		restoresuccess(204),
+		uploading(205),
+		backupfailed(206),
+		backupsuccess(207)		
+	}
+	MAX-ACCESS read-only
+	STATUS current
+	DESCRIPTION
+						"软件升级状态:
+ 		 					none(0) - 无操作.
+		 					downloading(1) - 固件下载中.
+		 					downloadfailed(2) - 固件下载失败.
+		 					downloadsuccess(3)- 固件下载成功.
+		 					upgrading(4) - 固件软件升级中.
+		 					upgradefailed(5) - 固件软件升级失败.
+		 					upgradesuccess(6) - 固件软件升级成功.
+		 					downloading2(201) - 配置文件下载中.
+		 					downloadfailed2(202) -配置文件下载失败.
+		 					invalidfile(203)  - 配置文件非法.
+		 					restoresuccess(204)- 导入配置文件失败.
+		 					uploading(205)    - 上传配置文件中.
+		 					backupfailed(206) - 备份配置文件失败.
+		 					backupsuccess(207) - 备份配置文件成功."    
+		 
+	DEFVAL { 0 }
+	::= { modEoCSoftwareUpgradeEntry 7 }
+
+		-- 1.3.6.1.4.1.34808.2.4.5
+modEoCCNUGroup OBJECT IDENTIFIER ::= { modEoCTree 5 }
+		
+		modEoCCNUWhiteList OBJECT IDENTIFIER ::= { modEoCCNUGroup 1 }
+		
+		modEoCCNUWhiteListAmountLimitation OBJECT-TYPE
+			SYNTAX INTEGER (0..10240)
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION
+								"【描述】CNU最大登记数。
+									【取值】
+									【使用】
+									【实现】"
+			::= { modEoCCNUWhiteList 1 }
+
+		modEoCCNUWhiteListRegisteredAmount OBJECT-TYPE
+			SYNTAX INTEGER (0..10240)
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+							"【描述】CNU已登记数。
+								【取值】
+								【使用】
+								【实现】"
+			::= { modEoCCNUWhiteList 2 }
+
+		modEoCCNUWhiteListAllRFOutputLevel OBJECT-TYPE
+			SYNTAX INTEGER
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION
+								"【描述】所有CNU输出电平。
+									【取值】
+									【使用】
+									【实现】"
+			::= { modEoCCNUWhiteList 3 }
+
+		modEoCCNUWhiteListAllExtMACLimitation OBJECT-TYPE
+			SYNTAX INTEGER
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION
+				"【描述】所有CNU的MAC地址限制。
+				【取值】
+				【使用】
+				【实现】"
+			::= { modEoCCNUWhiteList 4 }
+
+		modEoCCNUWhiteListPhyRateGate OBJECT-TYPE
+			SYNTAX INTEGER
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION
+				"【描述】物理层速率阈值。
+				【取值】
+				【使用】
+				【实现】"
+			::= { modEoCCNUWhiteList 5 }
+
+		modEoCCNUWhiteListTable OBJECT-TYPE
+			SYNTAX SEQUENCE OF ModEoCCNUWhiteListEntry
+			MAX-ACCESS not-accessible
+			STATUS current
+			DESCRIPTION
+				"【描述】CNU登记表单。
+				【取值】
+				【使用】
+				【实现】"
+			::= { modEoCCNUWhiteList 6 }
+
+		modEoCCNUWhiteListEntry OBJECT-TYPE
+			SYNTAX ModEoCCNUWhiteListEntry
+			MAX-ACCESS not-accessible
+			STATUS current
+			DESCRIPTION
+				"【描述】CNU登记表目。
+				【取值】
+				【使用】
+				【实现】"
+			INDEX { modEoCCNUWhiteListIndex }
+			::= { modEoCCNUWhiteListTable 1 }
+
+		
+		ModEoCCNUWhiteListEntry ::=
+			SEQUENCE { 
+				modEoCCNUWhiteListIndex
+					INTEGER,
+				modEoCCNUWhiteListMACAddress
+					MacAddress,
+				modEoCCNUWhiteListAuthorization
+					INTEGER,
+				modEoCCNUWhiteListRFOutputLevel
+					INTEGER,
+				modEoCCNUWhiteListAutoUpgradeEN
+					INTEGER,
+				modEoCCNUWhiteListRegisterOnlineState
+					INTEGER,
+				modEoCCNUWhiteListStartTime
+					TimeTicks,
+				modEoCCNUWhiteListEndTime
+					TimeTicks,
+				modEoCCNUWhiteListRowStatus
+					RowStatus,
+			  modEoCCNUWhiteListCLTIndex
+			    INTEGER,
+			  modEoCCNUWhiteListCNUIndex
+			    INTEGER
+			 }
+
+		modEoCCNUWhiteListIndex OBJECT-TYPE
+			SYNTAX INTEGER (0..10240)
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"【描述】CNU白名单序号索引。
+				【取值】
+				【使用】
+				【实现】"
+			::= { modEoCCNUWhiteListEntry 1 }
+
+		modEoCCNUWhiteListMACAddress OBJECT-TYPE
+			SYNTAX MacAddress
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION
+				"【描述】CNU的MAC地址。
+				【取值】
+				【使用】
+				【实现】"
+			::= { modEoCCNUWhiteListEntry 2 }
+
+		
+		modEoCCNUWhiteListAuthorization OBJECT-TYPE
+			SYNTAX INTEGER
+				{
+				not-authorized(0),
+				authorized(1)
+				}
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION
+				"【描述】CNU授权状态。
+				【取值】
+				【使用】
+				【实现】"
+			::= { modEoCCNUWhiteListEntry 3 }
+
+		
+		modEoCCNUWhiteListRFOutputLevel OBJECT-TYPE
+			SYNTAX INTEGER
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION
+				"【描述】CNU输出电平。
+				【取值】
+				【使用】
+				【实现】"
+			::= { modEoCCNUWhiteListEntry 4 }
+
+		
+		modEoCCNUWhiteListAutoUpgradeEN OBJECT-TYPE
+			SYNTAX INTEGER
+				{
+				disable(0),
+				enable(1)
+				}
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION
+				"【描述】CNU自动升级使能。
+				【取值】0表示禁止，1表示使能。
+				【使用】
+				【实现】"
+			::= { modEoCCNUWhiteListEntry 5 }
+
+		
+		modEoCCNUWhiteListRegisterOnlineState OBJECT-TYPE
+			SYNTAX INTEGER
+				{
+				offline(0),
+				online(1)
+				}
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"【描述】CNU在线状态。
+				【取值】
+					0，不在线；
+					1，在线。
+				【使用】
+				【实现】"
+			::= { modEoCCNUWhiteListEntry 6 }
+
+		
+		modEoCCNUWhiteListStartTime OBJECT-TYPE
+			SYNTAX TimeTicks
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION
+				"【描述】CNU业务开通时间。
+				【取值】
+				【使用】
+				【实现】"
+			::= { modEoCCNUWhiteListEntry 7 }
+
+		
+		modEoCCNUWhiteListEndTime OBJECT-TYPE
+			SYNTAX TimeTicks
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION
+				"【描述】CNU业务截止时间。
+				【取值】
+				【使用】
+				【实现】"
+			::= { modEoCCNUWhiteListEntry 8 }
+
+		
+		modEoCCNUWhiteListRowStatus OBJECT-TYPE
+			SYNTAX RowStatus
+			MAX-ACCESS read-create
+			STATUS current
+			DESCRIPTION
+				"【描述】行状态，用于创建，修改，删除某一行。
+				【取值】
+					none_existent (0) = 表项不存在
+					avtive(1)=激活该行
+					notInService（2）= 状态未激活					
+					notReady（3）= 不能被激活状态（未使用）
+					createAndGo（4）= 创建并激活 （未使用）
+					createAndWait(5)= 创建，但不激活 
+					destory(6)=销毁该行
+				【使用】avtive(1)、notInService（2）为可返回的状态项，
+createAndWait（5） 、destory(6)为用户可操作项
+					none_existent (0) 是指该表不存在。常规情况下，不可能返回这一状态。
+				【实现】已实现"
+			::= { modEoCCNUWhiteListEntry 9 
+			
+			}
+
+    modEoCCNUWhiteListCLTIndex OBJECT-TYPE
+			SYNTAX INTEGER (0..10240)
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"11月07日新增：【描述】CNU所在头端索引。
+				【取值】
+				【使用】
+				【实现】"
+			::= { modEoCCNUWhiteListEntry 10 }
+			
+	  modEoCCNUWhiteListCNUIndex OBJECT-TYPE
+			SYNTAX INTEGER (0..10240)
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"11月07日新增：【描述】CNU终端索引。
+				【取值】
+				【使用】
+				【实现】"
+			::= { modEoCCNUWhiteListEntry 11 }
+		
+     modEoCOnlineCNU OBJECT IDENTIFIER ::= { modEoCCNUGroup 2 }
+
+		modEoCOnlineCNUAllReset OBJECT-TYPE
+			SYNTAX INTEGER { reset(1) }
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION
+				"【描述】复位全部在线CNU。
+				【取值】
+				【使用】
+				【实现】
+				11月07日新增：针对一主机框下所有终端"
+			::= { modEoCOnlineCNU 1 }
+		
+		modEoCOnlineCNUCurrentAmount OBJECT-TYPE
+			SYNTAX INTEGER (0..10240)
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"【描述】当前在线CNU数量。
+				【取值】
+				【使用】
+				【实现】
+				11月07日新增：针对一主机框下所有终端"
+			::= { modEoCOnlineCNU 2 }
+
+		
+		modEoCOnlineCNUAmountLimitation OBJECT-TYPE
+			SYNTAX INTEGER (0..10240)
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION
+				"【描述】在线CNU数量限制。
+				【取值】
+				【使用】
+				【实现】
+				11月07日新增：针对一主机框下所有终端"
+			::= { modEoCOnlineCNU 3 }
+		
+		modEoCOnlineCNUTable OBJECT-TYPE
+			SYNTAX SEQUENCE OF ModEoCOnlineCNUEntry
+			MAX-ACCESS not-accessible
+			STATUS current
+			DESCRIPTION
+				"【描述】在线CNU信息表单。
+				【取值】
+				【使用】
+				【实现】"
+			::= { modEoCOnlineCNU 4 }
+
+		
+		modEoCOnlineCNUEntry OBJECT-TYPE
+			SYNTAX ModEoCOnlineCNUEntry
+			MAX-ACCESS not-accessible
+			STATUS current
+			DESCRIPTION
+				"【描述】在线CNU信息表目。
+				【取值】
+				【使用】
+				【实现】"
+			INDEX { modEoCOnlineCNUMasterIndex, modEoCOnlineCNUIndex }
+			::= { modEoCOnlineCNUTable 1 }
+
+		
+		ModEoCOnlineCNUEntry ::=
+			SEQUENCE { 
+				modEoCOnlineCNUMasterIndex
+					INTEGER,
+				modEoCOnlineCNUIndex
+					INTEGER,
+				modEoCOnlineCNUMACAddress
+					MacAddress,
+				modEoCOnlineCNUModelNumber
+					DisplayString,
+				modEoCOnlineCNUPortAmount
+					INTEGER,
+				modEoCOnlineCNUAuthorizationState
+					INTEGER,
+				modEoCOnlineCNUSoftwareVersion
+					DisplayString,
+				modEoCOnlineCNUReset
+					INTEGER,
+				modEoCOnlineCNURFAttenuation
+					INTEGER,
+				modEoCOnlineCNURFDownstreamQuality
+					INTEGER,
+				modEoCOnlineCNURFUpstreamQuality
+					INTEGER,
+				modEoCOnlineCNUPhyDownstreamRate
+					INTEGER,
+				modEoCOnlineCNUPhyUpstreamRate
+					INTEGER,
+				modOnlineCNUConfigurationSaving
+					INTEGER,
+				modOnlineCNUConfigurationResult
+					INTEGER,
+				modEoCOnlineCNUMacLimit
+					INTEGER,
+				modEoCOnlineCNUAutoUpgrade
+					INTEGER,
+				modEoCOnlineCNUTimeOnline
+					INTEGER
+			 }
+
+		modEoCOnlineCNUMasterIndex OBJECT-TYPE
+			SYNTAX INTEGER (0..20)
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"【描述】Master的序号索引。
+				【取值】
+				【使用】
+				【实现】
+				11月07日新增：CNU所在的头端索引 1-2-3-4"
+			::= { modEoCOnlineCNUEntry 1 }
+
+		
+		modEoCOnlineCNUIndex OBJECT-TYPE
+			SYNTAX INTEGER (0..10240)
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"【描述】在线CNU的序号索引。
+				【取值】
+				【使用】
+				【实现】
+					11月07日新增：终端索引 1到128"
+			::= { modEoCOnlineCNUEntry 2 }
+
+		
+		modEoCOnlineCNUMACAddress OBJECT-TYPE
+			SYNTAX MacAddress
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"【描述】在线CNU的MAC地址。
+				【取值】
+				【使用】
+				【实现】"
+			::= { modEoCOnlineCNUEntry 3 }
+
+		
+		modEoCOnlineCNUModelNumber OBJECT-TYPE
+			SYNTAX DisplayString (SIZE (0..255))
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"【描述】在线CNU的型号。
+				【取值】
+				【使用】
+				【实现】"
+			::= { modEoCOnlineCNUEntry 4 }
+
+		
+		modEoCOnlineCNUPortAmount OBJECT-TYPE
+			SYNTAX INTEGER
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"【描述】在线CNU以太网端口数量
+				【取值】
+				【使用】
+				【实现】"
+			::= { modEoCOnlineCNUEntry 5 }
+
+		
+		modEoCOnlineCNUAuthorizationState OBJECT-TYPE
+			SYNTAX INTEGER
+				{
+				not-authorized(0),
+				authorized(1)
+				}
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"【描述】在线CNU的授权状态。
+				【取值】0，非授权使用设备；1，合法授权设备。
+				【使用】
+				【实现】"
+			::= { modEoCOnlineCNUEntry 6 }
+
+		modEoCOnlineCNUSoftwareVersion OBJECT-TYPE
+			SYNTAX DisplayString (SIZE (0..255))
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"【描述】在线CNU的程序版本号。
+				【取值】
+				【使用】
+				【实现】"
+			::= { modEoCOnlineCNUEntry 7 }
+
+		
+		modEoCOnlineCNUReset OBJECT-TYPE
+			SYNTAX INTEGER { reset(1) }
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION
+				"【描述】复位在线CNU。
+				【取值】写入1时，复位该在线终端设备；读出此值无意义。
+				【使用】
+				【实现】"
+			::= { modEoCOnlineCNUEntry 8 }
+
+		
+		modEoCOnlineCNURFAttenuation OBJECT-TYPE
+			SYNTAX INTEGER (0..127)
+			UNITS "dB"
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"【描述】射频信道链路衰减，单位为dB。
+				【取值】
+				【使用】
+				【实现】"
+			::= { modEoCOnlineCNUEntry 9 }
+
+		
+		modEoCOnlineCNURFDownstreamQuality OBJECT-TYPE
+			SYNTAX INTEGER (0..100)
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION
+				"【描述】射频下行信道链路质量。
+				【取值】以百分制表示，100表示最佳质量，0表示最差质量；评价方式由设
+备厂商决定。
+				【使用】
+				【实现】"
+			::= { modEoCOnlineCNUEntry 10 }
+
+		
+		modEoCOnlineCNURFUpstreamQuality OBJECT-TYPE
+			SYNTAX INTEGER (0..100)
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION
+				"【描述】射频上行信道链路质量。
+				【取值】以百分制表示，100表示最佳质量，0表示最差质量，评价方式由设
+备厂商决定。
+				【使用】
+				【实现】"
+			::= { modEoCOnlineCNUEntry 11 }
+
+		
+		modEoCOnlineCNUPhyDownstreamRate OBJECT-TYPE
+			SYNTAX INTEGER
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION
+				"【描述】CUN下行物理层速率。
+				【取值】
+				【使用】
+				【实现】"
+			::= { modEoCOnlineCNUEntry 12 }
+
+		
+		modEoCOnlineCNUPhyUpstreamRate OBJECT-TYPE
+			SYNTAX INTEGER
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION
+				"【描述】CUN上行物理层速率。
+				【取值】
+				【使用】
+				【实现】"
+			::= { modEoCOnlineCNUEntry 13 }
+
+		
+		modOnlineCNUConfigurationSaving OBJECT-TYPE
+			SYNTAX INTEGER { save(1) }
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION
+				"【描述】保存CNU的当前配置至非易失性存储器。
+				【取值】设置为1。
+				【使用】
+				【实现】"
+			::= { modEoCOnlineCNUEntry 14 }
+
+		
+		modOnlineCNUConfigurationResult OBJECT-TYPE
+			SYNTAX INTEGER
+				{
+				none(0),
+				save(1),
+				failed(2)
+				}
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"【描述】保存CNU配置的结果
+				【取值】0，上次保存成功；2，上次保存失败
+				【使用】当前值为1时，表明正在保存中
+				【实现】"
+			::= { modEoCOnlineCNUEntry 15 }
+
+		modEoCOnlineCNUMacLimit OBJECT-TYPE
+			SYNTAX INTEGER (0..65)
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION
+				"【描述】CNU mac地址限制， 0不限制，1~8：限制数目，65：限制，不允许任何mac。
+				【取值】
+				【使用】
+				【实现】
+				"
+			::= { modEoCOnlineCNUEntry 16 }
+
+		modEoCOnlineCNUAutoUpgrade OBJECT-TYPE
+			SYNTAX INTEGER
+				{
+				disable(0),
+				enable(1)
+				}
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION
+				"【描述】CNU自动升级 开关
+				【取值】1 表示启用 0 表示禁用
+				【使用】
+				【实现】"
+			::= { modEoCOnlineCNUEntry 17 }
+
+		modEoCOnlineCNUTimeOnline OBJECT-TYPE
+			SYNTAX INTEGER
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"【描述】CNU 上线时间
+				【取值】单位是秒
+				【使用】
+				【实现】
+				"
+			::= { modEoCOnlineCNUEntry 18 }
+			
+		modEoCCNUService OBJECT IDENTIFIER ::= { modEoCCNUGroup 3 }
+
+		
+		modEoCCNUServiceType OBJECT-TYPE
+			SYNTAX INTEGER
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION
+				"【描述】CNU服务类型。
+				【取值】
+				【使用】
+				【实现】
+				11月07日新增：针对一主机框下所有终端"
+			::= { modEoCCNUService 1 }
+
+		
+		modEoCCNUServiceAmountLimitation OBJECT-TYPE
+			SYNTAX INTEGER
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION
+				"【描述】CNU服务最大数目。
+				【取值】
+				【使用】
+				【实现】
+				11月07日新增：针对一主机框下所有终端"
+			::= { modEoCCNUService 2 }
+
+		
+		modEoCCNUServiceTable OBJECT-TYPE
+			SYNTAX SEQUENCE OF ModEoCCNUServiceEntry
+			MAX-ACCESS not-accessible
+			STATUS current
+			DESCRIPTION
+				"【描述】CNU服务表单。
+				【取值】
+				【使用】
+				【实现】"
+			::= { modEoCCNUService 3 }
+
+		
+		modEoCCNUServiceEntry OBJECT-TYPE
+			SYNTAX ModEoCCNUServiceEntry
+			MAX-ACCESS not-accessible
+			STATUS current
+			DESCRIPTION
+				"【描述】CNU服务表目。
+				【取值】
+				【使用】
+				【实现】"
+			INDEX { modEoCCNUServiceIndex }
+			::= { modEoCCNUServiceTable 1 }
+
+		
+		ModEoCCNUServiceEntry ::=
+			SEQUENCE { 
+				modEoCCNUServiceIndex
+					INTEGER,
+				modEoCCNUServiceName
+					OCTET STRING,
+				modEoCCNUServiceMatchingValue
+					INTEGER,
+				modEoCCNUServiceQOSPrio
+					INTEGER,
+				modEoCCNUServiceDBADownstreamPIR
+					INTEGER,
+				modEoCCNUServiceDBAUpstreamPIR
+					INTEGER,
+				modEoCCNUServiceDBADownstreamCIR
+					INTEGER,
+				modEoCCNUServiceDBAUpstreamCIR
+					INTEGER,
+				modEoCCNUServiceMaxLatency
+					INTEGER,
+				modEoCCNUServiceRowStatus
+					RowStatus
+			 }
+
+		modEoCCNUServiceIndex OBJECT-TYPE
+			SYNTAX INTEGER
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"【描述】CNU服务序号索引。
+				【取值】
+				【使用】
+				【实现】
+				针对一主机框下所有终端"
+			::= { modEoCCNUServiceEntry 1 }
+
+		
+		modEoCCNUServiceName OBJECT-TYPE
+			SYNTAX OCTET STRING (SIZE (0..255))
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION
+				"【描述】CNU服务名称。
+				【取值】
+				【使用】
+				【实现】"
+			::= { modEoCCNUServiceEntry 2 }
+
+		
+		modEoCCNUServiceMatchingValue OBJECT-TYPE
+			SYNTAX INTEGER
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION
+				"【描述】CNU选择的服务类型。
+				【取值】
+				【使用】
+				【实现】"
+			::= { modEoCCNUServiceEntry 3 }
+
+		
+		modEoCCNUServiceQOSPrio OBJECT-TYPE
+			SYNTAX INTEGER (0..7)
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION
+				"【描述】CNU服务的QOS优先级。
+				【取值】0-7
+				【使用】
+				【实现】"
+			::= { modEoCCNUServiceEntry 4 }
+
+		
+		modEoCCNUServiceDBADownstreamPIR OBJECT-TYPE
+			SYNTAX INTEGER
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION
+				"【描述】CNU服务下行最大带宽。
+				【取值】
+				【使用】
+				【实现】"
+			::= { modEoCCNUServiceEntry 5 }
+
+		
+		modEoCCNUServiceDBAUpstreamPIR OBJECT-TYPE
+			SYNTAX INTEGER
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION
+				"【描述】CNU服务上行最大带宽。
+				【取值】
+				【使用】
+				【实现】"
+			::= { modEoCCNUServiceEntry 6 }
+
+		
+		modEoCCNUServiceDBADownstreamCIR OBJECT-TYPE
+			SYNTAX INTEGER
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION
+				"【描述】CNU服务下行保障带宽。
+				【取值】
+				【使用】
+				【实现】"
+			::= { modEoCCNUServiceEntry 7 }
+
+		
+		modEoCCNUServiceDBAUpstreamCIR OBJECT-TYPE
+			SYNTAX INTEGER
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION
+				"【描述】CNU服务上行保障带宽。
+				【取值】
+				【使用】
+				【实现】"
+			::= { modEoCCNUServiceEntry 8 }
+
+		
+		modEoCCNUServiceMaxLatency OBJECT-TYPE
+			SYNTAX INTEGER
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION
+				"【描述】最大允许延时。
+				【取值】
+				【使用】
+				【实现】"
+			::= { modEoCCNUServiceEntry 9 }
+
+		
+		modEoCCNUServiceRowStatus OBJECT-TYPE
+			SYNTAX RowStatus
+			MAX-ACCESS read-create
+			STATUS current
+			DESCRIPTION
+				"【描述】行状态，用于创建，修改，删除某一行。
+				【取值】
+					none_existent (0) = 表项不存在
+					avtive(1)=激活该行
+					notInService（2）= 状态未激活					
+					notReady（3）= 不能被激活状态（未使用）
+					createAndGo（4）= 创建并激活 （未使用）
+					createAndWait(5)= 创建，但不激活 
+					destory(6)=销毁该行
+				【使用】avtive(1)、notInService（2）为可返回的状态项
+ createAndWait（5） 、destory(6)为用户可操作项
+					none_existent (0) 是指该表不存在。常规情况下，不可能返回这一状
+态。
+				【实现】"
+			::= { modEoCCNUServiceEntry 10 }
+
+		
+		modEoCCNUPort OBJECT IDENTIFIER ::= { modEoCCNUGroup 4 }
+
+		
+		modEoCCNUPortPerCNULimitation OBJECT-TYPE
+			SYNTAX INTEGER
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION
+				"【描述】CNU最大物理端口数。
+				【取值】
+				【使用】
+				【实现】
+				针对一主机框下所有终端"
+			::= { modEoCCNUPort 1 }
+
+		
+		modEoCCNUPortAmountLimitation OBJECT-TYPE
+			SYNTAX INTEGER
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION
+				"【描述】CNU普通以太网端口数限制。
+				【取值】
+				【使用】
+				【实现】
+				针对一主机框下所有终端"
+			::= { modEoCCNUPort 2 }
+
+		
+		modEoCCNUPortTable OBJECT-TYPE
+			SYNTAX SEQUENCE OF ModEoCCNUPortEntry
+			MAX-ACCESS not-accessible
+			STATUS current
+			DESCRIPTION
+				"【描述】CNU端口表单。
+				【取值】
+				【使用】
+				【实现】"
+			::= { modEoCCNUPort 3 }
+
+		
+		modEoCCNUPortEntry OBJECT-TYPE
+			SYNTAX ModEoCCNUPortEntry
+			MAX-ACCESS not-accessible
+			STATUS current
+			DESCRIPTION
+				"【描述】CNU端口表目。
+				【取值】
+				【使用】
+				【实现】"
+			INDEX { modEoCCNUPortMasterIndex, modEoCCNUPortCNUIndex, 
+modEoCCNUPortIndex }
+			::= { modEoCCNUPortTable 1 }
+
+		ModEoCCNUPortEntry ::=
+			SEQUENCE { 
+				modEoCCNUPortMasterIndex
+					INTEGER,
+				modEoCCNUPortCNUIndex
+					INTEGER,
+				modEoCCNUPortIndex
+					INTEGER,
+				modEoCCNUPortEN
+					INTEGER,
+				modEoCCNUPortService
+					INTEGER,       
+				modEoCCNUPortVLANTagEN
+					INTEGER,
+				modEoCCNUPortVLANMarkID
+					INTEGER
+			 }
+
+		
+		modEoCCNUPortMasterIndex OBJECT-TYPE
+			SYNTAX INTEGER (0..20)
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"【描述】MASTER的序号索引。
+				【取值】
+				【使用】
+				【实现】
+				11月07日新增：终端所在头端的索引 1-2-3-4"
+			::= { modEoCCNUPortEntry 1 }
+
+		
+		modEoCCNUPortCNUIndex OBJECT-TYPE
+			SYNTAX INTEGER (0..10240)
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"【描述】CNU的序号索引。
+				【取值】
+				【使用】
+				【实现】
+				11月07日新增：终端索引 1到128"
+			::= { modEoCCNUPortEntry 2 }
+
+		
+		modEoCCNUPortIndex OBJECT-TYPE
+			SYNTAX INTEGER
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"【描述】CNU端口的序号索引。
+				【取值】
+				【使用】
+				【实现】
+				11月07日新增：要加以详细描述"
+			::= { modEoCCNUPortEntry 3 }
+		
+		modEoCCNUPortEN OBJECT-TYPE
+			SYNTAX INTEGER
+				{
+				disable(0),
+				enable(1)
+				}
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION
+				"【描述】CNU端口启动或关闭。
+				【取值】0表示禁止，1表示使能。
+				【使用】
+				【实现】"
+			::= { modEoCCNUPortEntry 4 }
+	
+		modEoCCNUPortService OBJECT-TYPE
+			SYNTAX INTEGER
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION
+				"【描述】CNU端口服务类型。
+				【取值】
+				【使用】
+				【实现】"
+			::= { modEoCCNUPortEntry 5 }
+		
+		modEoCCNUPortVLANTagEN OBJECT-TYPE
+			SYNTAX INTEGER
+				{
+				disable(0),
+				enable(1)
+				}
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION
+				"【描述】CNU端口VLAN TAG使能。
+				【取值】0表示禁止，1表示使能。
+				【使用】
+				【实现】"
+			::= { modEoCCNUPortEntry 6 }
+
+		
+		modEoCCNUPortVLANMarkID OBJECT-TYPE
+			SYNTAX INTEGER (0..4095)
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION
+				"【描述】CNU端口VLAN ID。
+				【取值】0-4095
+				【使用】
+				【实现】"
+			::= { modEoCCNUPortEntry 7 }
+
+		ModEoCCNULinkTest OBJECT IDENTIFIER ::= { modEoCCNUGroup 5 }
+
+		
+		ModEoCCNULinkTestCNUAddress OBJECT-TYPE
+			SYNTAX MacAddress
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION
+				"【描述】待测试的CNU的MAC地址
+				【取值】
+				【使用】
+				【实现】"
+			::= { ModEoCCNULinkTest 1 }
+
+		
+		ModEoCCNULinkTestPeriod OBJECT-TYPE
+			SYNTAX INTEGER
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION
+				"【描述】链路测试时长
+				【取值】以秒为单位，0表示在重启CNU之前一直处于测试模式
+				【使用】
+				【实现】"
+			::= { ModEoCCNULinkTest 2 }
+
+		
+		ModEoCCNULinkTestMode OBJECT-TYPE
+			SYNTAX INTEGER
+				{
+				allzero(0),
+				allone(1),
+				random(2)
+				}
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION
+				"【描述】链路测试模式
+				【取值】0：以全0字符进行测试；1：以全1字符进行测试；2：以随机字符进行测试；默认测试模式为全0字符。
+				【使用】
+				【实现】"
+			::= { ModEoCCNULinkTest 3 }
+
+		
+		ModEoCCNULinkTestTesting OBJECT-TYPE
+			SYNTAX INTEGER
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION
+				"【描述】指定该CNU进入测试模式
+				【取值】读出该值无意义
+				【使用】
+				【实现】"
+			::= { ModEoCCNULinkTest 4 }
+
+		
+		ModEoCCNULinkTestStatus OBJECT-TYPE
+			SYNTAX INTEGER
+				{
+				noresponse(0),
+				running(1),
+				complete(2)
+				}
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"【描述】测试进行的状态
+				【取值】0：CNU未响应；1：CNU测试正在进行中；2：CNU测试完成，测试结果已经就绪
+				【使用】
+				【实现】"
+			::= { ModEoCCNULinkTest 5 }
+
+		
+		ModEoCCNULinkTestResult OBJECT-TYPE
+			SYNTAX SEQUENCE OF modEoCCNULinkTestEntry
+			MAX-ACCESS not-accessible
+			STATUS current
+			DESCRIPTION
+				"【描述】链路测试结果
+				【取值】只有当ModEoCCNULinkTestStatus的值为2时才有意义
+				【使用】
+				【实现】"
+			::= { ModEoCCNULinkTest 6 }
+
+		
+		ModEoCCNULinkTestEntry OBJECT-TYPE
+			SYNTAX modEoCCNULinkTestEntry
+			MAX-ACCESS not-accessible
+			STATUS current
+			DESCRIPTION
+				"【描述】链路测试表目
+				【取值】
+				【使用】
+				【实现】"
+			INDEX { ModEoCCNULinkTestResultIndex}
+			::= { ModEoCCNULinkTestResult 1 }
+
+		modEoCCNULinkTestEntry ::=
+			SEQUENCE { 
+				ModEoCCNULinkTestResultReceiveBytes
+					INTEGER,
+				ModEoCCNULinkTestResultDuration
+					INTEGER,
+				ModEoCCNULinkTestResultErrorBytes
+					INTEGER,
+				ModEoCCNULinkTestResultThroughput
+					INTEGER,
+				ModEoCCNULinkTestResultLinkQuality
+					INTEGER,
+				ModEoCCNULinkTestResultIndex
+					INTEGER
+			 }
+
+		
+		ModEoCCNULinkTestResultReceiveBytes OBJECT-TYPE
+			SYNTAX INTEGER
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"【描述】链路测试过程中接收到的字节数
+				【取值】
+				【使用】
+				【实现】"
+			::= { ModEoCCNULinkTestEntry 1 }
+		
+		ModEoCCNULinkTestResultDuration OBJECT-TYPE
+			SYNTAX INTEGER
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"【描述】链路测试持续的时长
+				【取值】以秒为单位
+				【使用】
+				【实现】"
+			::= { ModEoCCNULinkTestEntry 2 }
+	
+		ModEoCCNULinkTestResultErrorBytes OBJECT-TYPE
+			SYNTAX INTEGER
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"【描述】链路测试过程中接收到的错误字节数
+				【取值】在allzero模式下可以通过统计受到的非0字符进行判断；在allone模式下可以通过统计受到的非1字符进行判断；在random模式下该值无意义
+				【使用】
+				【实现】"
+			::= { ModEoCCNULinkTestEntry 3 }
+		
+		ModEoCCNULinkTestResultThroughput OBJECT-TYPE
+			SYNTAX INTEGER
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"【描述】链路测试过程中计算得到的吞吐率
+				【取值】以Kbps为单位
+				【使用】
+				【实现】"
+			::= { ModEoCCNULinkTestEntry 4 }
+
+		
+		ModEoCCNULinkTestResultLinkQuality OBJECT-TYPE
+			SYNTAX INTEGER (0..65535)
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"【描述】链路测试过程评估的链路质量
+				【取值】取值范围0..65535，数值越大说明链路质量越好，计算方法由供应商自行确定
+				【使用】
+				【实现】"
+			::= { ModEoCCNULinkTestEntry 5 }
+
+
+		ModEoCCNULinkTestResultIndex OBJECT-TYPE
+			SYNTAX INTEGER (0..20)
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"【描述】链路测试表目的序号索引。
+				【取值】
+				【使用】
+				【实现】"
+			::= { ModEoCCNULinkTestEntry 6 }
+
+
+		ModEoCCNUToneMapSetting OBJECT IDENTIFIER ::= { modEoCCNUGroup 6 }
+
+		
+		ModEoCCNUToneMapSettingTable OBJECT-TYPE
+			SYNTAX SEQUENCE OF modEoCCNUToneMapSettingEntry
+			MAX-ACCESS not-accessible
+			STATUS current
+			DESCRIPTION
+				"【描述】CNU调谐映射表单
+				【取值】
+				【使用】
+				【实现】"
+			::= { ModEoCCNUToneMapSetting 1 }
+
+		
+		ModEoCCNUToneMapSettingEntry OBJECT-TYPE
+			SYNTAX modEoCCNUToneMapSettingEntry
+			MAX-ACCESS not-accessible
+			STATUS current
+			DESCRIPTION
+				"【描述】CNU Tone Map表目
+				【取值】
+				【使用】
+				【实现】"
+			INDEX { ModEoCCNUToneMapSettingIndex}
+			::= { ModEoCCNUToneMapSettingTable 1 }
+
+		modEoCCNUToneMapSettingEntry ::=
+			SEQUENCE { 
+				ModEoCCNUToneMapSettingMacAddress
+					MacAddress,
+				ModEoCCNUToneMapSettingToneMask
+					INTEGER,
+				ModEoCCNUToneMapSettingResponse
+					INTEGER,
+				ModEoCCNUToneMapSettingIndex
+					INTEGER
+			 }
+
+		
+		ModEoCCNUToneMapSettingMacAddress OBJECT-TYPE
+			SYNTAX MacAddress
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION
+				"【描述】CNU的MAC地址
+				【取值】
+				【使用】
+				【实现】"
+			::= { ModEoCCNUToneMapSettingEntry 1 }
+		
+		ModEoCCNUToneMapSettingToneMask OBJECT-TYPE
+			SYNTAX INTEGER
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION
+				"【描述】对应MAC地址的CNU载波的Tone Mask
+				【取值】256字节共2048位，每1位对应个载波，该位清零表示载波被屏蔽（即不能用于载波），该位置1表载波开放（即可以用于载波）
+				【使用】
+				【实现】"
+			::= { ModEoCCNUToneMapSettingEntry 2 }
+	
+		ModEoCCNUToneMapSettingResponse OBJECT-TYPE
+			SYNTAX INTEGER
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"【描述】Tone Mask设置的结果
+				【取值】0：Tone Mask Set，Tone Mask已经设置；1：Tone Mask NOT Set，Tone Mask没有设置；其他值保留
+				【使用】
+				【实现】"
+			::= { ModEoCCNUToneMapSettingEntry 3 }
+
+
+		ModEoCCNUToneMapSettingIndex OBJECT-TYPE
+			SYNTAX INTEGER (0..20)
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"【描述】调谐映射表目的序号索引。
+				【取值】
+				【使用】
+				【实现】"
+			::= { ModEoCCNUToneMapSettingEntry 4 }
+
+		-- 1.3.6.1.4.1.34808.2.4.6
+modEoCStatisticGroup OBJECT IDENTIFIER ::= { modEoCTree 6 }
+		
+		modEoCRealTimeStatisticTable OBJECT-TYPE
+			SYNTAX SEQUENCE OF ModEoCRealTimeStatisticEntry
+			MAX-ACCESS not-accessible
+			STATUS current
+			DESCRIPTION
+				"【描述】EoC实时性能统计表单。
+				【取值】
+				【使用】
+				【实现】
+				11月07日新增：针对主机框"
+			::= { modEoCStatisticGroup 1 }
+
+		
+		modEoCRealTimeStatisticEntry OBJECT-TYPE
+			SYNTAX ModEoCRealTimeStatisticEntry
+			MAX-ACCESS not-accessible
+			STATUS current
+			DESCRIPTION
+				"【描述】EoC实时性能统计表目。
+				【取值】
+				【使用】
+				【实现】"
+			INDEX { modEoCRealTimeStatisticMasterIndex, 
+modEoCRealTimeStatisticCNUIndex }
+			::= { modEoCRealTimeStatisticTable 1 }
+
+		
+		ModEoCRealTimeStatisticEntry ::=
+			SEQUENCE { 
+				modEoCRealTimeStatisticMasterIndex
+					INTEGER,
+				modEoCRealTimeStatisticCNUIndex
+					INTEGER,
+				modEoCRealTimeStatisticTxPkt
+					INTEGER,
+				modEoCRealTimeStatisticRxPkt
+					INTEGER,
+				modEoCRealTimeStatisticTxByte
+					Counter64,
+				modEoCRealTimeStatisticRxByte
+					Counter64,
+				modEoCRealTimeStatisticTxBcast
+					INTEGER,
+				modEoCRealTimeStatisticRxBcast
+					INTEGER,
+				modEoCRealTimeStatisticTxMcast
+					INTEGER,
+				modEoCRealTimeStatisticRxMcast
+					INTEGER,
+				modEoCRealTimeStatisticRxCrc
+					INTEGER,
+				modEoCRealTimeStatisticTxShort
+					INTEGER,
+				modEoCRealTimeStatisticRxShort
+					INTEGER,
+				modEoCRealTimeStatisticTxDropped
+					INTEGER,
+				modEoCRealTimeStatisticRxDropped
+					INTEGER,
+				modEoCRealTimeStatisticAveragePre-FEC
+					INTEGER,
+				modEoCRealTimeStatisticReset
+					INTEGER
+			 }
+
+		
+		modEoCRealTimeStatisticMasterIndex OBJECT-TYPE
+			SYNTAX INTEGER (0..20)
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"【描述】MASTER的序号索引，或CNU所属MASTER的序号索引。
+				【取值】
+				【使用】
+				【实现】
+				11月07日新增：头端索引 1-2-3-4"
+			::= { modEoCRealTimeStatisticEntry 1 }
+
+		
+		modEoCRealTimeStatisticCNUIndex OBJECT-TYPE
+			SYNTAX INTEGER (0..10240)
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"【描述】CNU的序号索引，若为Master统计，则取值为0。
+				【取值】
+				【使用】
+				【实现】
+				11月07日新增：终端索引 1到128 "
+			::= { modEoCRealTimeStatisticEntry 2 }
+
+		
+		modEoCRealTimeStatisticTxPkt OBJECT-TYPE
+			SYNTAX INTEGER
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"【描述】发送单播数据包的数量。
+				【取值】
+				【使用】
+				【实现】"
+			::= { modEoCRealTimeStatisticEntry 3 }
+
+		
+		modEoCRealTimeStatisticRxPkt OBJECT-TYPE
+			SYNTAX INTEGER
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"【描述】接收单播数据包的数量。
+				【取值】
+				【使用】
+				【实现】"
+			::= { modEoCRealTimeStatisticEntry 4 }
+
+		
+		modEoCRealTimeStatisticTxByte OBJECT-TYPE
+			SYNTAX Counter64
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"【描述】所有数据流中发送字节的总数。
+				【取值】
+				【使用】
+				【实现】"
+			::= { modEoCRealTimeStatisticEntry 5 }
+
+		
+		modEoCRealTimeStatisticRxByte OBJECT-TYPE
+			SYNTAX Counter64
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"【描述】所有数据流中接收字节的总数。
+				【取值】
+				【使用】
+				【实现】"
+			::= { modEoCRealTimeStatisticEntry 6 }
+
+		
+		modEoCRealTimeStatisticTxBcast OBJECT-TYPE
+			SYNTAX INTEGER
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"【描述】发送广播数据包的数量。
+				【取值】
+				【使用】
+				【实现】"
+			::= { modEoCRealTimeStatisticEntry 7 }
+
+		
+		modEoCRealTimeStatisticRxBcast OBJECT-TYPE
+			SYNTAX INTEGER
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"【描述】接收广播数据包的数量。
+				【取值】
+				【使用】
+				【实现】"
+			::= { modEoCRealTimeStatisticEntry 8 }
+
+		
+		modEoCRealTimeStatisticTxMcast OBJECT-TYPE
+			SYNTAX INTEGER
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"【描述】发送多播数据包的数量。
+				【取值】
+				【使用】
+				【实现】"
+			::= { modEoCRealTimeStatisticEntry 9 }
+
+		
+		modEoCRealTimeStatisticRxMcast OBJECT-TYPE
+			SYNTAX INTEGER
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"【描述】接收多播数据包的数量。
+				【取值】
+				【使用】
+				【实现】"
+			::= { modEoCRealTimeStatisticEntry 10 }
+
+		
+		modEoCRealTimeStatisticRxCrc OBJECT-TYPE
+			SYNTAX INTEGER
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"【描述】接收CRC数据包的数量。
+				【取值】
+				【使用】
+				【实现】"
+			::= { modEoCRealTimeStatisticEntry 11 }
+
+		
+		modEoCRealTimeStatisticTxShort OBJECT-TYPE
+			SYNTAX INTEGER
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"【描述】发送短数据包的数量。
+				【取值】
+				【使用】
+				【实现】"
+			::= { modEoCRealTimeStatisticEntry 12 }
+
+		
+		modEoCRealTimeStatisticRxShort OBJECT-TYPE
+			SYNTAX INTEGER
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"【描述】接收短数据包的数量。
+				【取值】
+				【使用】
+				【实现】"
+			::= { modEoCRealTimeStatisticEntry 13 }
+
+		
+		modEoCRealTimeStatisticTxDropped OBJECT-TYPE
+			SYNTAX INTEGER
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"【描述】发送数据包的丢弃数量。
+				【取值】
+				【使用】
+				【实现】"
+			::= { modEoCRealTimeStatisticEntry 14 }
+
+		
+		modEoCRealTimeStatisticRxDropped OBJECT-TYPE
+			SYNTAX INTEGER
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"【描述】接收数据包的丢弃数量。
+				【取值】
+				【使用】
+				【实现】"
+			::= { modEoCRealTimeStatisticEntry 15 }
+
+		
+		modEoCRealTimeStatisticAveragePre-FEC OBJECT-TYPE
+			SYNTAX INTEGER
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"【描述】平均Pre-FEC比特错误率。
+				【取值】
+				【使用】
+				【实现】"
+			::= { modEoCRealTimeStatisticEntry 16 }
+
+		
+		modEoCRealTimeStatisticReset OBJECT-TYPE
+			SYNTAX INTEGER
+				{
+				none(0),
+				clear(1)
+				}
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION
+				"【描述】重置实时性能统计
+				【取值】值为clear(1)将会清空对该接口所进行的统计. 值为none(0)将会什
+么都不做
+				【使用】
+				【实现】"
+			::= { modEoCRealTimeStatisticEntry 17 }
+
+
+-- *
+-- * IGMP snooping管理组
+-- *
+
+		-- 1.3.6.1.4.1.34808.2.4.7
+modEoCIGMPSnoopingGroup OBJECT IDENTIFIER ::= { modEoCTree 7 }
+		
+		modEoCIGMPSnoopingTable OBJECT-TYPE
+			SYNTAX SEQUENCE OF ModEoCIGMPSnoopingEntry
+			MAX-ACCESS not-accessible
+			STATUS current
+			DESCRIPTION
+				"【描述】EoC IGMP Snooping表单。
+				【取值】
+				【使用】
+				【实现】"
+			::= { modEoCIGMPSnoopingGroup 1 }
+
+		
+		-- 1.3.6.1.4.1.34808.2.4.7.1.1
+		modEoCIGMPSnoopingEntry OBJECT-TYPE
+			SYNTAX ModEoCIGMPSnoopingEntry
+			MAX-ACCESS not-accessible
+			STATUS current
+			DESCRIPTION
+				"【描述】EoC IGMP Snooping表目。
+				【取值】
+				【使用】
+				【实现】"
+			INDEX { modEoCIGMPSnoopingMasterIndex, modEoCIGMPSnoopingCNUIndex }
+			::= { modEoCIGMPSnoopingTable 1 }
+
+		
+		ModEoCIGMPSnoopingEntry ::=
+			SEQUENCE { 
+				modEoCIGMPSnoopingMasterIndex
+					INTEGER,
+				modEoCIGMPSnoopingCNUIndex
+					INTEGER,
+				modEoCIGMPSnoopingDevMACAddress
+					MacAddress,
+				modEoCIGMPSnoopingEN
+					INTEGER
+			 }
+
+		modEoCIGMPSnoopingMasterIndex OBJECT-TYPE
+			SYNTAX INTEGER (0..20)
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"【描述】MASTER的序号索引，或CNU所属MASTER的序号索引。
+				【取值】
+				【使用】
+				【实现】
+				11月07日新增：头端索引 1-2-3-4"
+			::= { modEoCIGMPSnoopingEntry 1 }
+
+		
+		modEoCIGMPSnoopingCNUIndex OBJECT-TYPE
+			SYNTAX INTEGER (0..10240)
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"【描述】CNU的序号索引，如果是设置Master，则取值为0。
+				【取值】
+				【使用】
+				【实现】
+				11月07日新增：终端索引 1到128	"
+			::= { modEoCIGMPSnoopingEntry 2 }
+
+		
+		modEoCIGMPSnoopingDevMACAddress OBJECT-TYPE
+			SYNTAX MacAddress
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION
+				"【描述】设备的MAC地址。
+				【取值】
+				【使用】
+				【实现】"
+			::= { modEoCIGMPSnoopingEntry 3 }
+
+		
+		modEoCIGMPSnoopingEN OBJECT-TYPE
+			SYNTAX INTEGER
+				{
+				disable(0),
+				enable(1)
+				}
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION
+				"【描述】设备IGMP Snooping开关。
+				【取值】0表示禁止，1表示使能。
+				【使用】
+				【实现】"
+			::= { modEoCIGMPSnoopingEntry 4 }
+
+-- *
+-- *  SNMP TRAP管理组
+-- *
+
+-- 1.3.6.1.4.1.34808.2.4.8
+
+modEoCTrapGroup 		OBJECT IDENTIFIER ::= { modEoCTree 8 }
+
+modEoCTrapMaxTimes 				OBJECT-TYPE
+    SYNTAX 					INTEGER (1..255)
+    MAX-ACCESS 				read-write
+    STATUS 					optional
+    DESCRIPTION 			
+             "每条TRAP发送的最大次数。"
+    ::= {  modEoCTrapGroup 1  }
+
+modEoCTrapMinInterval 			OBJECT-TYPE
+    SYNTAX 					TimeInterval 
+    MAX-ACCESS 				read-write
+    STATUS 					optional
+    DESCRIPTION 			
+              "发送TRAP的最小时间间隔，单位为百分之一秒。"
+   ::= {  modEoCTrapGroup 2  }
+
+modEoCTrapMaxInterval 			OBJECT-TYPE
+    SYNTAX 					TimeInterval 
+    MAX-ACCESS				read-write
+    STATUS 					optional
+    DESCRIPTION 			
+              "发送TRAP的最大时间间隔，单位为百分之一秒。"
+   ::= { 	modEoCTrapGroup 3  }
+
+modEoCTrapIP					OBJECT-TYPE 		
+	SYNTAX					IpAddress 		
+	MAX-ACCESS				read-write 		
+	STATUS					optional  		
+	DESCRIPTION				
+						" Trap目的主机IP地址" 		
+	::=  {  modEoCTrapGroup 4 } 
+modEoCTrapCommunity 			OBJECT-TYPE
+     SYNTAX 				DisplayString
+     MAX-ACCESS				read-write
+     STATUS				    optional
+     DESCRIPTION     		
+     					"发送TRAP的共同体串。"
+    ::= {  modEoCTrapGroup 5  }
+
+modEoCTrapStatus 				OBJECT-TYPE
+     SYNTAX 				TruthValue
+     MAX-ACCESS				read-write
+     STATUS 				optional
+     DESCRIPTION    		
+     					"TRAP状态:“1”使用TRAP；“2”不使用TRAP。"
+    ::= {  modEoCTrapGroup 6 }
+
+-- *
+-- *  SNMP CBAT 组
+-- *
+
+-- 1.3.6.1.4.1.34808.2.4.255
+
+modEoCCBATGroup 		OBJECT IDENTIFIER ::= { modEoCTree 255 }
+
+modEoCSerial 				OBJECT-TYPE
+    SYNTAX 					OCTET STRING(SIZE(0..255))
+    MAX-ACCESS 			read-only
+    STATUS 					current
+    DESCRIPTION 			
+             "CBAT 序列号"
+    ::= {  modEoCCBATGroup 1  }
+    
+modEoCBootVersion 				OBJECT-TYPE
+    SYNTAX 					OCTET STRING(SIZE(0..255))
+    MAX-ACCESS 			read-only
+    STATUS 					current
+    DESCRIPTION 			
+             "CBAT 引导程序版本"
+    ::= {  modEoCCBATGroup 2  }
+
+modEoCKernelVersion 				OBJECT-TYPE
+    SYNTAX 					OCTET STRING(SIZE(0..255))
+    MAX-ACCESS 			read-only
+    STATUS 					current
+    DESCRIPTION 			
+             "CBAT kernel 版本号"
+    ::= {  modEoCCBATGroup 3  }
+
+modEoCAppVersion 				OBJECT-TYPE
+    SYNTAX 					OCTET STRING(SIZE(0..255))
+    MAX-ACCESS 			read-only
+    STATUS 					current
+    DESCRIPTION 			
+             "CBAT 应用版本号"
+    ::= {  modEoCCBATGroup 4  }
+
+modEoCHardInfo 				OBJECT-TYPE
+    SYNTAX 					OCTET STRING(SIZE(0..255))
+    MAX-ACCESS 			read-only
+    STATUS 					current
+    DESCRIPTION 			
+             "CBAT 硬件信息"
+    ::= {  modEoCCBATGroup 5  }
+
+modEoCFlashSize 				OBJECT-TYPE
+    SYNTAX 					INTEGER
+    MAX-ACCESS 			read-only
+    STATUS 					current
+    DESCRIPTION 			
+             "CBAT Flash 大小"
+    ::= {  modEoCCBATGroup 6  }
+
+modEoCSDRAMSize 				OBJECT-TYPE
+    SYNTAX 					INTEGER
+    MAX-ACCESS 			read-only
+    STATUS 					current
+    DESCRIPTION 			
+             "CBAT SDRAM 大小"
+    ::= {  modEoCCBATGroup 7  }
+
+modEoCUptime 				OBJECT-TYPE
+    SYNTAX 					TimeTicks
+    MAX-ACCESS 			read-only
+    STATUS 					current
+    DESCRIPTION 			
+             "CBAT 系统启动时间"
+    ::= {  modEoCCBATGroup 8  }
+
+modEoCDHCPEnable 				OBJECT-TYPE
+    SYNTAX 					INTEGER
+				{
+				disable(0),
+				enable(1)
+				}
+    MAX-ACCESS 			read-write
+    STATUS 					current
+    DESCRIPTION 			
+             "CBAT DHCP Enable"
+    ::= {  modEoCCBATGroup 9  }
+
+modEoCIPAddress 				OBJECT-TYPE
+    SYNTAX 					IpAddress
+    MAX-ACCESS 			read-write
+    STATUS 					current
+    DESCRIPTION 			
+             "CBAT IP 地址"
+    ::= {  modEoCCBATGroup 10  }
+
+modEoCNetmask 				OBJECT-TYPE
+    SYNTAX 					IpAddress
+    MAX-ACCESS 			read-write
+    STATUS 					current
+    DESCRIPTION 			
+             "CBAT 网络掩码"
+    ::= {  modEoCCBATGroup 11  }
+
+modEoCGateway 				OBJECT-TYPE
+    SYNTAX 					IpAddress
+    MAX-ACCESS 			read-write
+    STATUS 					current
+    DESCRIPTION 			
+             "CBAT 网关地址"
+    ::= {  modEoCCBATGroup 12  }
+
+modEoCMacAddress 				OBJECT-TYPE
+    SYNTAX 					MacAddress
+    MAX-ACCESS 			read-only
+    STATUS 					current
+    DESCRIPTION 			
+             "CBAT MAC 地址"
+    ::= {  modEoCCBATGroup 13  }
+
+modPLCTech 				OBJECT-TYPE
+    SYNTAX 					INTEGER {
+		moca(1),
+		homePlugBPL(2),
+		homePlugAV(3),
+		homePNA(4),
+		wiFi(5),
+		others(6)
+	}
+    MAX-ACCESS 			read-only
+    STATUS 					current
+    DESCRIPTION 			
+             "CBAT 采取的技术"
+    ::= {  modEoCCBATGroup 14  }
+
+modEoCVendorInfo 				OBJECT-TYPE
+    SYNTAX 					OCTET STRING(SIZE(0..255))
+    MAX-ACCESS 			read-only
+    STATUS 					current
+    DESCRIPTION 			
+             "CBAT 制造商信息"
+    ::= {  modEoCCBATGroup 15  }
+
+modEoCModel 				OBJECT-TYPE
+    SYNTAX 					OCTET STRING(SIZE(0..255))
+    MAX-ACCESS 			read-only
+    STATUS 					current
+    DESCRIPTION 			
+             "CBAT 型号"
+    ::= {  modEoCCBATGroup 16  }
+    
+modEoCEMSIPAddress OBJECT-TYPE
+	SYNTAX IpAddress
+	MAX-ACCESS read-write
+	STATUS current
+	DESCRIPTION
+		        "网管服务器(EMS)IP地址。"
+	::= { modEoCCBATGroup 17 }
+
+modEocStatus OBJECT-TYPE
+	SYNTAX INTEGER {
+		NOACTIVE(0),
+		ACTIVE(1)
+	}
+	MAX-ACCESS read-write
+	STATUS current
+	DESCRIPTION
+	          "配置信息实际提交"
+  ::= { modEoCCBATGroup 18 }
+      
+                                                                
+END
